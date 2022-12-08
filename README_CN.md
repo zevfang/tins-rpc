@@ -2,6 +2,13 @@
   <img src="theme/icon.png" width="300" alt="TinsRPC Logo">
 </p>
 
+<div align=center>
+
+[![Go](https://github.com/zevfang/tins-rpc/workflows/Go/badge.svg?branch=master)](https://github.com/zevfang/tins-rpc/actions)
+[![Release](https://img.shields.io/github/v/release/zevfang/tins-rpc.svg?style=flat-square)](https://github.com/zevfang/tins-rpc)
+
+</div>
+
 # TinsRPC
 
 TinsRPC是一个rpc的客户端工具，使用它你必须导入proto文件，目前它并不成熟，可能会有异常现象，但它一定会越来越好，如果你对它感兴趣欢迎加入我们。
