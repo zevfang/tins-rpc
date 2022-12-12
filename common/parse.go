@@ -3,14 +3,18 @@ package common
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"github.com/google/uuid"
 	"os"
+	"path"
 	"strings"
 
 	parse "github.com/emicklei/proto"
 )
 
 type ProtoData struct {
+	FilePath    string
+	FileName    string
 	PackageName string            //package
 	ServiceName string            //service
 	Relation    map[string]string //req:rpc
@@ -18,18 +22,24 @@ type ProtoData struct {
 }
 
 // GerProtoData 解析并获取proto
-func GerProtoData(path string) (ProtoData, error) {
+func GerProtoData(filePath string) (ProtoData, error) {
+	if len(filePath) == 0 {
+		return ProtoData{}, errors.New("path error")
+	}
 	protoData := ProtoData{
+		FilePath:    filePath,
+		FileName:    path.Base(filePath), //获取文件名+后缀
 		PackageName: "",
 		ServiceName: "",
 		Relation:    make(map[string]string),
 		RequestList: make(map[string]string),
 	}
-	reader, err := os.Open(path)
+	reader, err := os.Open(filePath)
 	if err != nil {
 		return protoData, err
 	}
 	defer reader.Close()
+
 	parser := parse.NewParser(reader)
 	definition, _ := parser.Parse()
 

@@ -10,12 +10,12 @@ import (
 
 func initWelcome() *container.TabItem {
 	var welcomeTabItem *container.TabItem
-	logo := canvas.NewImageFromResource(theme2.Ico)
+	logo := canvas.NewImageFromResource(theme2.ResourceLogoIcon)
 	logo.FillMode = canvas.ImageFillContain
 	logo.SetMinSize(fyne.NewSize(362*0.8, 192*0.8))
 
 	welcomeTabItem = container.NewTabItemWithIcon("WelCome", nil, nil)
-	wel := widget.NewRichTextFromMarkdown("# " + "Welcome to TinsRPC Desktop")
+	wel := widget.NewRichTextFromMarkdown("# " + theme2.WelComeMsg)
 	for i := range wel.Segments {
 		if seg, ok := wel.Segments[i].(*widget.TextSegment); ok {
 			seg.Style.Alignment = fyne.TextAlignCenter

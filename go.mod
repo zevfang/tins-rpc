@@ -1,6 +1,6 @@
 module tins-rpc
 
-go 1.18
+go 1.17
 
 require (
 	fyne.io/fyne/v2 v2.2.4

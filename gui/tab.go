@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
-	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	"strings"
 	"tins-rpc/common"
+	theme2 "tins-rpc/theme"
 )
 
 type TabItemView struct {
@@ -42,7 +42,7 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 	tabItemView.MetadataText.SetPlaceHolder("METADATA")
 
 	// CALL BUTTON
-	tabItemView.CallButton = widget.NewButtonWithIcon("Run", theme.MediaPlayIcon(), func() {
+	tabItemView.CallButton = widget.NewButtonWithIcon("Run", theme2.ResourceRunIcon, func() {
 		tabItemView.OnCall()
 	})
 

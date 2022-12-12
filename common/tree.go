@@ -4,15 +4,23 @@ import (
 	"fmt"
 )
 
+const (
+	ProtoProto   = "proto"   //文件
+	ProtoService = "service" //服务
+	ProtoMethod  = "method"  //方法
+)
+
 type TreeData struct {
-	TreeData map[string][]string
-	JsonData map[string]string // {Service.Rpc}:{RequestJsonString}
+	TreeData map[string][]string //gui tree map data
+	JsonData map[string]string   // {Service.Rpc}:{RequestJsonString}
+	IconData map[string]string   // {key}:P、S、M
 }
 
 func NewTreeData() *TreeData {
 	t := &TreeData{
 		TreeData: make(map[string][]string),
 		JsonData: make(map[string]string),
+		IconData: make(map[string]string),
 	}
 	t.TreeData[""] = []string{} //初始化根节点
 	return t
@@ -23,11 +31,11 @@ func (t *TreeData) GetProtoData(filePath string) error {
 	if err != nil {
 		return err
 	}
-	parent := fmt.Sprintf("[S] %s.%s", result.PackageName, result.ServiceName)
+	parent := fmt.Sprintf("%s.%s", result.PackageName, result.ServiceName) //services
 	t.Clear(parent)
 	t.AppendParentTreeNode(parent)
 	for rpcName, reqJson := range result.RequestList {
-		rpcName = fmt.Sprintf("[M] %s.%s", result.ServiceName, rpcName)
+		rpcName = fmt.Sprintf("%s.%s", result.ServiceName, rpcName) //method
 		t.AppendChildTreeNode(parent, rpcName)
 		t.SetRequestJson(rpcName, reqJson)
 	}

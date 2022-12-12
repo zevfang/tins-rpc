@@ -1,8 +1,10 @@
 <p align="center">
-  <img src="theme/icon.png" width="300" alt="TinsRPC Logo">
+  <img src="resource/logo.png" width="300" alt="TinsRPC Logo">
 </p>
 
 # TinsRPC
+
+English | [简体中文](README-CN.md)
 
 TinsRPC is an rpc client tool. To use it, you must import the proto file. It is not yet mature, and there may be abnormal phenomena, but it will definitely get better and better. If you are interested in it, welcome to join us.
 

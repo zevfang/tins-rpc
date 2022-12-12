@@ -1,7 +1,6 @@
 package theme
 
 const (
-	AppTitle    = "TinsRPC"
 	WelComeMsg  = "Welcome to TinsRPC Desktop"
 	WindowTitle = "TinsRPC - This is a rpc client tool"
 

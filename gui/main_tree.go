@@ -2,12 +2,43 @@ package gui
 
 import (
 	"fmt"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	"strings"
+	"tins-rpc/common"
+	theme2 "tins-rpc/theme"
 )
 
 func menuTree() *widget.Tree {
-	tree := widget.NewTreeWithStrings(MenuTree.TreeData)
+	tree := widget.NewTree(
+		//childUIDs
+		func(uid widget.TreeNodeID) []widget.TreeNodeID {
+			return MenuTree.TreeData[uid]
+		},
+		//isBranch
+		func(uid widget.TreeNodeID) bool {
+			fmt.Println(uid)
+			_, b := MenuTree.TreeData[uid]
+			return b
+		},
+		//create
+		func(b bool) fyne.CanvasObject {
+			return container.NewHBox(
+				widget.NewIcon(theme2.ResourceMSquareIcon),
+				widget.NewLabelWithStyle("", fyne.TextAlignLeading, fyne.TextStyle{}))
+		},
+		//update
+		func(uid widget.TreeNodeID, b bool, object fyne.CanvasObject) {
+			if strings.Contains(uid, common.ProtoService) {
+				object.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(theme2.ResourceSSquareIcon)
+			}
+			if strings.Contains(uid, common.ProtoMethod) {
+				object.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(theme2.ResourceMSquareIcon)
+			}
+			object.(*fyne.Container).Objects[1].(*widget.Label).SetText(uid)
+		},
+	)
 	tree.OnSelected = func(uid string) {
 		if strings.Contains(uid, "[S]") {
 			return
@@ -39,5 +70,6 @@ func menuTree() *widget.Tree {
 		TabItemList[uid] = tabItem
 	}
 	tree.OpenAllBranches()
+	tree.Refresh()
 	return tree
 }
