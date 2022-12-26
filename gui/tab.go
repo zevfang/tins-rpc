@@ -126,7 +126,7 @@ func (t *TabItemView) OnCall() {
 			t.ResponseText.Refresh()
 			return
 		}
-		t.ResponseText.Text = common.ParseJSON(body)
+		t.ResponseText.Text = common.FormatJSON(body)
 		t.ResponseText.Refresh()
 	}()
 

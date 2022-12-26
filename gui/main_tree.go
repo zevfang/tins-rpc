@@ -5,7 +5,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	"strings"
+	pp "github.com/emicklei/proto"
 	"tins-rpc/common"
 	theme2 "tins-rpc/theme"
 )
@@ -14,12 +14,11 @@ func menuTree() *widget.Tree {
 	tree := widget.NewTree(
 		//childUIDs
 		func(uid widget.TreeNodeID) []widget.TreeNodeID {
-			return MenuTree.TreeData[uid]
+			return MenuTree.Nodes(uid)
 		},
 		//isBranch
 		func(uid widget.TreeNodeID) bool {
-			fmt.Println(uid)
-			_, b := MenuTree.TreeData[uid]
+			_, b := MenuTree.ProtoData[uid]
 			return b
 		},
 		//create
@@ -30,17 +29,20 @@ func menuTree() *widget.Tree {
 		},
 		//update
 		func(uid widget.TreeNodeID, b bool, object fyne.CanvasObject) {
-			if strings.Contains(uid, common.ProtoService) {
+			switch MenuTree.NodeType(uid) {
+			case ProtoProto:
+				object.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(theme2.ResourcePSquareIcon)
+			case ProtoService:
 				object.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(theme2.ResourceSSquareIcon)
-			}
-			if strings.Contains(uid, common.ProtoMethod) {
+			case ProtoMethod:
 				object.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(theme2.ResourceMSquareIcon)
 			}
 			object.(*fyne.Container).Objects[1].(*widget.Label).SetText(uid)
 		},
 	)
 	tree.OnSelected = func(uid string) {
-		if strings.Contains(uid, "[S]") {
+		_type := MenuTree.NodeType(uid)
+		if _type == ProtoProto || _type == ProtoService {
 			return
 		}
 		// 删除 New Tab
@@ -49,6 +51,8 @@ func menuTree() *widget.Tree {
 				globalWin.tabs.RemoveIndex(i)
 			}
 		}
+		// Tab 获取显示名称
+		uid = MenuTree.TabName(uid)
 		// 检测打开并选中
 		if _, ok := TabItemList[uid]; ok {
 			//设置选中
@@ -60,7 +64,7 @@ func menuTree() *widget.Tree {
 		// 设置被选中
 		tabItem.SelectTree = uid
 		// 获取选中方法json
-		data := MenuTree.GetRequestJson(uid)
+		data := MenuTree.RequestJson(uid)
 		fmt.Println(uid, data)
 		tabItem.RequestText.Text = data
 		tabItem.RequestText.Refresh()
@@ -72,4 +76,129 @@ func menuTree() *widget.Tree {
 	tree.OpenAllBranches()
 	tree.Refresh()
 	return tree
+}
+
+const (
+	ProtoProto   = "proto"   //文件
+	ProtoService = "service" //服务
+	ProtoMethod  = "method"  //方法
+)
+
+type TreeData struct {
+	ProtoData map[string][]TreeNode
+	JsonData  map[string]string // {Service.Rpc}:{RequestJsonString}
+}
+
+type TreeNode struct {
+	NodeID  string
+	Type    string
+	Data    interface{}
+	JsonStr string
+}
+
+func NewTreeData() *TreeData {
+	t := &TreeData{
+		ProtoData: make(map[string][]TreeNode),
+	}
+	t.ProtoData[""] = make([]TreeNode, 0) //初始化根节点
+	return t
+}
+
+func (t *TreeData) Append(filePath string) error {
+	// 解析proto到definit
+	definitions := common.NewDefinitions()
+	_ = definitions.ReadFile(filePath)
+	// 转换为tree结构
+	treeData := t.Parse(definitions)
+	for s, nodes := range treeData {
+		t.ProtoData[s] = append(t.ProtoData[s], nodes...)
+	}
+	return nil
+}
+
+func (t *TreeData) Parse(d *common.Definitions) map[string][]TreeNode {
+	msgJson := common.NewDecoder(d).DecodeAll()
+	data := make(map[string][]TreeNode)
+	// "":test.proto
+	data[""] = append(data[""], TreeNode{
+		NodeID:  d.GetFileName(),
+		Type:    ProtoProto,
+		Data:    nil,
+		JsonStr: "",
+	})
+	for svcName, svcDef := range d.GetServices() {
+		//test.proto:ct.Ct、test.proto:ct.Ost
+		newSvcName := fmt.Sprintf("%s.%s", d.GetPkgName(), svcName)
+		data[d.GetFileName()] = append(data[d.GetFileName()], TreeNode{
+			NodeID:  newSvcName,
+			Type:    ProtoService,
+			Data:    svcDef,
+			JsonStr: "",
+		})
+		for _, rpc := range svcDef.Elements {
+			rpcData := rpc.(*pp.RPC)
+			if rpcData.Parent.(*pp.Service).Name == svcName {
+				//ct.Ct:GetName
+				data[newSvcName] = append(data[newSvcName], TreeNode{
+					NodeID:  rpcData.Name,
+					Type:    ProtoMethod,
+					Data:    rpcData,
+					JsonStr: msgJson[rpcData.RequestType],
+				})
+			}
+		}
+	}
+	return data
+}
+
+func (t *TreeData) Nodes(uid string) []widget.TreeNodeID {
+	var nodes []widget.TreeNodeID
+	for _, node := range MenuTree.ProtoData[uid] {
+		nodes = append(nodes, node.NodeID)
+	}
+	return nodes
+}
+
+func (t *TreeData) NodeType(uid string) string {
+	var _type string
+	for _, nodes := range MenuTree.ProtoData {
+		for _, nd := range nodes {
+			if nd.NodeID == uid {
+				_type = nd.Type
+				break
+			}
+		}
+	}
+	return _type
+}
+
+func (t *TreeData) TabName(uid string) string {
+	var name, pNodeName string
+	for k, nodes := range MenuTree.ProtoData {
+		pNodeName = k
+		for _, nd := range nodes {
+			if nd.NodeID == uid && nd.Type == ProtoMethod {
+				name = fmt.Sprintf("%s.%s", pNodeName, nd.NodeID)
+				break
+			}
+		}
+	}
+	return name
+}
+
+func (t *TreeData) RequestJson(uid string) string {
+	var jsonStr string
+	for _, nodes := range MenuTree.ProtoData {
+		for _, nd := range nodes {
+			if nd.NodeID == uid {
+				jsonStr = nd.JsonStr
+				break
+			}
+		}
+	}
+	return jsonStr
+}
+
+func (t *TreeData) RemoveAll() {
+	t.ProtoData = map[string][]TreeNode{}
 }

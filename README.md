@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="resource/logo.png" width="300" alt="TinsRPC Logo">
+  <img src="resource/logo.png" width="200" alt="TinsRPC Logo">
 </p>
 
 # TinsRPC

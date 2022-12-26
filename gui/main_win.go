@@ -9,7 +9,6 @@ import (
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
 	"os"
-	"tins-rpc/common"
 	theme2 "tins-rpc/theme"
 )
 
@@ -26,7 +25,7 @@ var (
 	globalWin    *MainWin
 	WindowWidth  float32 = 1400
 	WindowHeight float32 = 800
-	MenuTree             = common.NewTreeData()
+	MenuTree             = NewTreeData()
 	TabItemList          = make(map[string]*TabItemView)
 )
 
@@ -76,7 +75,7 @@ func NewMainWin() *MainWin {
 			if filePath == "" || fileName == "" {
 				return
 			}
-			err = MenuTree.GetProtoData(filePath)
+			err = MenuTree.Append(filePath)
 			if err != nil {
 				return
 			}
