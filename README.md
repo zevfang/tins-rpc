@@ -2,6 +2,13 @@
   <img src="resource/logo.png" width="200" alt="TinsRPC Logo">
 </p>
 
+<div align=center>
+
+[![Go](https://github.com/zevfang/tins-rpc/workflows/Go/badge.svg?branch=master)](https://github.com/zevfang/tins-rpc/actions)
+[![Release](https://img.shields.io/github/v/release/zevfang/tins-rpc.svg?style=flat-square)](https://github.com/zevfang/tins-rpc)
+
+</div>
+
 # TinsRPC
 
 English | [简体中文](README-CN.md)
