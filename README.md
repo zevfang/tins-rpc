@@ -40,9 +40,9 @@ fyne package
 
 fyne build
 ```
-fyne package -os windows -icon ./theme/icon.png -name TinsRPC
-fyne package -os darwin -icon ./theme/icon.png -name TinsRPC
-fyne package -os linux -icon ./theme/icon.png -name TinsRPC
+fyne package -os windows -icon ./resource/logo.png -name TinsRPC
+fyne package -os darwin -icon ./resource/logo.png -name TinsRPC
+fyne package -os linux -icon ./resource/logo.png -name TinsRPC
 ```
 
 local build

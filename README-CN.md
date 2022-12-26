@@ -40,9 +40,9 @@ fyne package
 
 fyne打包编译
 ```
-fyne package -os windows -icon ./theme/icon.png -name TinsRPC
-fyne package -os darwin -icon ./theme/icon.png -name TinsRPC
-fyne package -os linux -icon ./theme/icon.png -name TinsRPC
+fyne package -os windows -icon ./resource/logo.png -name TinsRPC
+fyne package -os darwin -icon ./resource/logo.png -name TinsRPC
+fyne package -os linux -icon ./resource/logo.png -name TinsRPC
 ```
 
 本地编译
