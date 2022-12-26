@@ -92,11 +92,11 @@ func (t *TabItemView) OnCall() {
 		t.ResponseText.Refresh()
 		return
 	}
-	if strings.Contains(t.SelectTree, "[S]") {
-		t.ResponseText.Text = "Please select a method."
-		t.ResponseText.Refresh()
-		return
-	}
+	//if strings.Contains(t.SelectTree, "[S]") {
+	//	t.ResponseText.Text = "Please select a method."
+	//	t.ResponseText.Refresh()
+	//	return
+	//}
 	fmt.Println("框架：", t.RpcSelect.Selected)
 	serviceAndRpc := strings.Split(strings.Split(t.SelectTree, " ")[1], ".")
 	fmt.Println("服务：", serviceAndRpc)

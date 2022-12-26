@@ -52,15 +52,16 @@ func menuTree() *widget.Tree {
 			}
 		}
 		// Tab 获取显示名称
-		uid = MenuTree.TabName(uid)
+		uidTab := MenuTree.TabName(uid)
 		// 检测打开并选中
-		if _, ok := TabItemList[uid]; ok {
+		if _, ok := TabItemList[uidTab]; ok {
 			//设置选中
-			globalWin.tabs.Select(TabItemList[uid].TabItem)
+			globalWin.tabs.Select(TabItemList[uidTab].TabItem)
 			return
 		}
 		// 添加选项卡
-		tabItem := AppendTabItemView(uid, globalWin.tabs)
+		tabItem := AppendTabItemView(uidTab, globalWin.tabs)
+
 		// 设置被选中
 		tabItem.SelectTree = uid
 		// 获取选中方法json
