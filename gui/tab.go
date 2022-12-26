@@ -98,8 +98,8 @@ func (t *TabItemView) OnCall() {
 	//	return
 	//}
 	fmt.Println("框架：", t.RpcSelect.Selected)
-	serviceAndRpc := strings.Split(strings.Split(t.SelectTree, " ")[1], ".")
-	fmt.Println("服务：", serviceAndRpc)
+	svcPath := strings.Split(t.SelectTree, ".")
+	fmt.Println("服务：", t.SelectTree)
 	payload := []byte(t.RequestText.Text)
 
 	metadata := make(map[string]string)
@@ -116,8 +116,8 @@ func (t *TabItemView) OnCall() {
 	go func() {
 		_, body, err := common.Call(t.RpcSelect.Selected, common.RequestData{
 			Address:       address,
-			ServicePath:   serviceAndRpc[0],
-			ServiceMethod: serviceAndRpc[1],
+			ServicePath:   svcPath[1],
+			ServiceMethod: svcPath[2],
 			Metadata:      metadata,
 			Payload:       payload,
 		})

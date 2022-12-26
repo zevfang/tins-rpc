@@ -61,9 +61,9 @@ func menuTree() *widget.Tree {
 		}
 		// 添加选项卡
 		tabItem := AppendTabItemView(uidTab, globalWin.tabs)
-
 		// 设置被选中
-		tabItem.SelectTree = uid
+		tabItem.SelectTree = uidTab
+
 		// 获取选中方法json
 		data := MenuTree.RequestJson(uid)
 		fmt.Println(uid, data)
@@ -72,7 +72,7 @@ func menuTree() *widget.Tree {
 		//设置选中
 		globalWin.tabs.Select(tabItem.TabItem)
 		//保存TabItem
-		TabItemList[uid] = tabItem
+		TabItemList[uidTab] = tabItem
 	}
 	tree.OpenAllBranches()
 	tree.Refresh()
@@ -188,16 +188,14 @@ func (t *TreeData) TabName(uid string) string {
 }
 
 func (t *TreeData) RequestJson(uid string) string {
-	var jsonStr string
 	for _, nodes := range MenuTree.ProtoData {
 		for _, nd := range nodes {
 			if nd.NodeID == uid {
-				jsonStr = nd.JsonStr
-				break
+				return nd.JsonStr
 			}
 		}
 	}
-	return jsonStr
+	return ""
 }
 
 func (t *TreeData) RemoveAll() {

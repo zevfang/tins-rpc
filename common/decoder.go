@@ -25,6 +25,7 @@ func (d *decoder) DecodeAll() map[string]string {
 		mkv, _ := d.Decode(s)
 		byteList, _ := json.Marshal(&mkv)
 		data[s] = FormatJSON(byteList)
+		d.r = make(map[string]interface{}) //TODO 清空 待优化
 	}
 	return data
 }
