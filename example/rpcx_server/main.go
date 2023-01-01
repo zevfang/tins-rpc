@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/smallnest/rpcx/server"
 	"log"
+	"time"
 	greeterPb "tins-rpc/example/proto"
 )
 
@@ -18,6 +19,7 @@ func (s *GreeterService) SayHello(ctx context.Context, in *greeterPb.HelloReques
 	log.Printf("Received: %v", in.GetName())
 	msg := in.GetName() + " say hello for RPCx"
 	reply.Message = msg
+	time.Sleep(time.Second * 5)
 	return nil
 }
 

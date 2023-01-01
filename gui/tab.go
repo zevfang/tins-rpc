@@ -7,20 +7,22 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 	"strings"
+	"time"
 	"tins-rpc/call"
 	"tins-rpc/common"
 	theme2 "tins-rpc/theme"
 )
 
 type TabItemView struct {
-	UriInput     *widget.Entry
-	RequestText  *widget.Entry
-	ResponseText *widget.Entry
-	MetadataText *widget.Entry
-	RpcSelect    *widget.Select
-	CallButton   *widget.Button
-	SelectTree   string
-	TabItem      *container.TabItem
+	UriInput      *widget.Entry
+	RequestText   *widget.Entry
+	ResponseText  *widget.Entry
+	MetadataText  *widget.Entry
+	RpcSelect     *widget.Select
+	UsedTimeLabel *widget.Label
+	CallButton    *widget.Button
+	SelectTree    string
+	TabItem       *container.TabItem
 }
 
 func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
@@ -51,13 +53,19 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 	tabItemView.RpcSelect = widget.NewSelect([]string{call.RPCX, call.GRPC}, func(s string) {})
 	tabItemView.RpcSelect.SetSelected(call.RPCX)
 
+	// 耗时显示
+	tabItemView.UsedTimeLabel = widget.NewLabel("")
+
 	headPanel := container.NewGridWithColumns(6,
 		tabItemView.UriInput,
 		tabItemView.RpcSelect,
 		layout.NewSpacer(),
 		layout.NewSpacer(),
 		layout.NewSpacer(),
-		container.NewHBox(layout.NewSpacer(), tabItemView.CallButton))
+		container.NewHBox(
+			layout.NewSpacer(),
+			container.NewGridWithColumns(2, tabItemView.UsedTimeLabel, tabItemView.CallButton),
+		))
 
 	centerPanel := container.NewVSplit(
 		container.NewHSplit(tabItemView.RequestText, tabItemView.ResponseText),
@@ -109,8 +117,11 @@ func (t *TabItemView) OnCall() {
 			return
 		}
 	}
+	//禁用按钮
+	t.CallButton.Disable()
 
 	go func() {
+		tms := time.Now()
 		_, body, err := call.Call(t.RpcSelect.Selected, call.RequestData{
 			Fd:            MenuTree.ProtoFds[t.SelectTree],
 			Address:       address,
@@ -123,10 +134,20 @@ func (t *TabItemView) OnCall() {
 		if err != nil {
 			t.ResponseText.Text = err.Error()
 			t.ResponseText.Refresh()
+			// 显示耗时
+			t.UsedTimeLabel.SetText(fmt.Sprintf("%d ms", time.Since(tms).Milliseconds()))
+			t.UsedTimeLabel.Refresh()
+			// 启用按钮
+			t.CallButton.Enable()
 			return
 		}
 		t.ResponseText.Text = common.FormatJSON(body)
 		t.ResponseText.Refresh()
+		// 显示耗时
+		t.UsedTimeLabel.SetText(fmt.Sprintf("%d ms", time.Since(tms).Milliseconds()))
+		t.UsedTimeLabel.Refresh()
+		// 启用按钮
+		t.CallButton.Enable()
 	}()
 
 }
