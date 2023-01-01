@@ -6,19 +6,24 @@ import (
 	"fmt"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 	"tins-rpc/common"
 )
 
 var unaryStreamDesc = &grpc.StreamDesc{ServerStreams: false, ClientStreams: false}
 
 func DoGRPC(req RequestData) (header map[string]string, body []byte, err error) {
+	//set metadata
+	md := metadata.New(req.Metadata)
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
+	//dial
 	conn, err := grpc.Dial(req.Address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, nil, err
 	}
 	defer conn.Close()
 	// method = "/greeter.Greeter/SayHello"
-	cs, err := conn.NewStream(context.Background(), unaryStreamDesc,
+	cs, err := conn.NewStream(ctx, unaryStreamDesc,
 		fmt.Sprintf("/%s.%s/%s", req.PackageName, req.ServicePath, req.ServiceMethod))
 	if err != nil {
 		return nil, nil, err
