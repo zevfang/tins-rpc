@@ -29,7 +29,7 @@ func initWelcome() *container.TabItem {
 	for k, myApp := range appRegister {
 		shortCuts.Append(k, widget.NewLabelWithStyle(myApp, fyne.TextAlignCenter, fyne.TextStyle{}))
 	}
-	//shortCuts.Append("Show/Hide", new_widget.NewLabelWithStyle("This is a rpc client tool!", fyne.TextAlignCenter, fyne.TextStyle{}))
+	//shortCuts.Append("Show/Hide", new_widget.NewLabelWithStyle("This is a call client tool!", fyne.TextAlignCenter, fyne.TextStyle{}))
 
 	welcomeTabItem.Content = container.NewCenter(
 		container.NewVBox(

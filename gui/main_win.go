@@ -21,7 +21,7 @@ type MainWin struct {
 
 var (
 	Version      = "v1.0.0"
-	AppID        = "com.tins.rpc.app"
+	AppID        = "com.tins.call.app"
 	globalWin    *MainWin
 	WindowWidth  float32 = 1400
 	WindowHeight float32 = 800

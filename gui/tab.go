@@ -7,6 +7,7 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 	"strings"
+	"tins-rpc/call"
 	"tins-rpc/common"
 	theme2 "tins-rpc/theme"
 )
@@ -27,7 +28,7 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 	// URI TEXT
 	tabItemView.UriInput = widget.NewEntry()
 	tabItemView.UriInput.PlaceHolder = "127.0.0.1:8080"
-
+	//tabItemView.UriInput.Text = "127.0.0.1:9081"
 	// REQ TEXT
 	tabItemView.RequestText = widget.NewMultiLineEntry()
 	tabItemView.RequestText.PlaceHolder = "Editor(json)"
@@ -47,8 +48,8 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 	})
 
 	// 框架选项
-	tabItemView.RpcSelect = widget.NewSelect([]string{common.RPCX}, func(s string) {})
-	tabItemView.RpcSelect.SetSelected(common.RPCX)
+	tabItemView.RpcSelect = widget.NewSelect([]string{call.RPCX, call.GRPC}, func(s string) {})
+	tabItemView.RpcSelect.SetSelected(call.RPCX)
 
 	headPanel := container.NewGridWithColumns(6,
 		tabItemView.UriInput,
@@ -92,11 +93,7 @@ func (t *TabItemView) OnCall() {
 		t.ResponseText.Refresh()
 		return
 	}
-	//if strings.Contains(t.SelectTree, "[S]") {
-	//	t.ResponseText.Text = "Please select a method."
-	//	t.ResponseText.Refresh()
-	//	return
-	//}
+
 	fmt.Println("框架：", t.RpcSelect.Selected)
 	svcPath := strings.Split(t.SelectTree, ".")
 	fmt.Println("服务：", t.SelectTree)
@@ -114,8 +111,10 @@ func (t *TabItemView) OnCall() {
 	}
 
 	go func() {
-		_, body, err := common.Call(t.RpcSelect.Selected, common.RequestData{
+		_, body, err := call.Call(t.RpcSelect.Selected, call.RequestData{
+			Fd:            MenuTree.ProtoFds[t.SelectTree],
 			Address:       address,
+			PackageName:   svcPath[0],
 			ServicePath:   svcPath[1],
 			ServiceMethod: svcPath[2],
 			Metadata:      metadata,

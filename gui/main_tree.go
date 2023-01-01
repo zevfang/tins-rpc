@@ -6,6 +6,7 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
 	pp "github.com/emicklei/proto"
+	"tins-rpc/call"
 	"tins-rpc/common"
 	theme2 "tins-rpc/theme"
 )
@@ -88,6 +89,7 @@ const (
 type TreeData struct {
 	ProtoData map[string][]TreeNode
 	JsonData  map[string]string // {Service.Rpc}:{RequestJsonString}
+	ProtoFds  map[string]call.ProtoDescriptor
 }
 
 type TreeNode struct {
@@ -100,6 +102,7 @@ type TreeNode struct {
 func NewTreeData() *TreeData {
 	t := &TreeData{
 		ProtoData: make(map[string][]TreeNode),
+		ProtoFds:  make(map[string]call.ProtoDescriptor),
 	}
 	t.ProtoData[""] = make([]TreeNode, 0) //初始化根节点
 	return t
@@ -120,7 +123,7 @@ func (t *TreeData) Append(filePath string) error {
 func (t *TreeData) Parse(d *common.Definitions) map[string][]TreeNode {
 	msgJson := common.NewDecoder(d).DecodeAll()
 	data := make(map[string][]TreeNode)
-	// "":test.proto
+	// "":greeter.proto
 	data[""] = append(data[""], TreeNode{
 		NodeID:  d.GetFileName(),
 		Type:    ProtoProto,
@@ -128,7 +131,7 @@ func (t *TreeData) Parse(d *common.Definitions) map[string][]TreeNode {
 		JsonStr: "",
 	})
 	for svcName, svcDef := range d.GetServices() {
-		//test.proto:ct.Ct、test.proto:ct.Ost
+		//greeter.proto:ct.Ct、greeter.proto:ct.Ost
 		newSvcName := fmt.Sprintf("%s.%s", d.GetPkgName(), svcName)
 		data[d.GetFileName()] = append(data[d.GetFileName()], TreeNode{
 			NodeID:  newSvcName,
@@ -146,6 +149,13 @@ func (t *TreeData) Parse(d *common.Definitions) map[string][]TreeNode {
 					Data:    rpcData,
 					JsonStr: msgJson[rpcData.RequestType],
 				})
+				// fd
+				fdKey := fmt.Sprintf("%s.%s", newSvcName, rpcData.Name)
+				t.ProtoFds[fdKey] = call.ProtoDescriptor{
+					FileDescriptor: d.GetFd(),
+					Request:        fmt.Sprintf("%s.%s", d.GetPkgName(), rpcData.RequestType),
+					Return:         fmt.Sprintf("%s.%s", d.GetPkgName(), rpcData.ReturnsType),
+				}
 			}
 		}
 	}
@@ -200,4 +210,5 @@ func (t *TreeData) RequestJson(uid string) string {
 
 func (t *TreeData) RemoveAll() {
 	t.ProtoData = map[string][]TreeNode{}
+	t.ProtoFds = map[string]call.ProtoDescriptor{}
 }

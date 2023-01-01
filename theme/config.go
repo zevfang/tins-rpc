@@ -2,7 +2,7 @@ package theme
 
 const (
 	WelComeMsg  = "Welcome to TinsRPC Desktop"
-	WindowTitle = "TinsRPC - This is a rpc client tool"
+	WindowTitle = "TinsRPC - An rpc client tool"
 
 	DismissText = "Cancel"
 	ConfirmText = "OK"
@@ -14,5 +14,5 @@ TinsRPC desktop is a desktop software based on [Fyne](https://fyne.io/),
 
 which is purely built by personal interests.
 
-The Source code is [tins-rpc](https://github.com/zevfang/tins-rpc).`
+The Source code is [tins-call](https://github.com/zevfang/tins-call).`
 )

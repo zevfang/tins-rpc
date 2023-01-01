@@ -1,4 +1,4 @@
-package common
+package call
 
 import (
 	"context"
@@ -7,35 +7,17 @@ import (
 	"time"
 )
 
-const (
-	RPCX = "RPCx"
-	GRPC = "gRPC"
-)
-
-type RequestData struct {
-	Address       string
-	ServicePath   string
-	ServiceMethod string
-	Metadata      map[string]string
-	Payload       []byte
-}
-
-func Call(entity string, req RequestData) (header map[string]string, body []byte, err error) {
-	switch entity {
-	case RPCX:
-		return DoRPCX(req)
-	case GRPC:
-		return DoGRPC(req)
-	}
-	return
-}
-
 func DoRPCX(req RequestData) (header map[string]string, body []byte, err error) {
 	ctx := context.Background()
 	option := client.DefaultOption
+	// tls
+	//conf := &tls.Config{
+	//	InsecureSkipVerify: true,
+	//}
+	//option.TLSConfig = conf
 	option.Heartbeat = true
-	option.HeartbeatInterval = 1 * time.Second
-	option.TCPKeepAlivePeriod = 1 * time.Second
+	option.HeartbeatInterval = 9999 * time.Second
+	option.TCPKeepAlivePeriod = 9999 * time.Second
 	rClient := client.NewClient(option)
 	err = rClient.Connect(`tcp`, req.Address)
 	if err != nil {
@@ -49,9 +31,5 @@ func DoRPCX(req RequestData) (header map[string]string, body []byte, err error) 
 	request.Metadata = req.Metadata
 	request.Payload = req.Payload
 	header, body, err = rClient.SendRaw(ctx, request)
-	return
-}
-
-func DoGRPC(req RequestData) (header map[string]string, body []byte, err error) {
 	return
 }

@@ -3,6 +3,7 @@ package common
 import (
 	"bytes"
 	"fmt"
+	"github.com/jhump/protoreflect/desc"
 	"io"
 	"io/ioutil"
 	"os"
@@ -13,6 +14,7 @@ import (
 )
 
 type Definitions struct {
+	fd                *desc.FileDescriptor
 	fileNamesRead     []string
 	fileNameToPackage map[string]string
 	fileName          string                 // ct.proto
@@ -53,6 +55,7 @@ func (d *Definitions) ReadFrom(filepath string, reader io.Reader) error {
 	if err != nil {
 		return err
 	}
+	d.fd = GetProtoFileDescriptor(filepath)
 	d.fileNamesRead = append(d.fileNamesRead, filepath)
 	parser := pp.NewParser(bytes.NewReader(data))
 	def, err := parser.Parse()
@@ -74,6 +77,10 @@ func (d *Definitions) ReadFrom(filepath string, reader io.Reader) error {
 		d.AddMessage(each.Name, each)
 	}))
 	return nil
+}
+
+func (d *Definitions) GetFd() *desc.FileDescriptor {
+	return d.fd
 }
 
 func (d *Definitions) GetFileName() string {
