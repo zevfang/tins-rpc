@@ -10,6 +10,7 @@ import (
 	"time"
 	"tins-rpc/call"
 	"tins-rpc/common"
+	"tins-rpc/data"
 	theme2 "tins-rpc/theme"
 )
 
@@ -22,15 +23,24 @@ type TabItemView struct {
 	UsedTimeLabel *widget.Label
 	CallButton    *widget.Button
 	SelectTree    string
+	ProtoName     string
 	TabItem       *container.TabItem
 }
 
 func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 	tabItemView := &TabItemView{}
+	tabItemView.ProtoName = fmt.Sprintf("%s.proto", strings.Split(tabTitle, ".")[0]) //本地存储使用
+
 	// URI TEXT
 	tabItemView.UriInput = widget.NewEntry()
 	tabItemView.UriInput.PlaceHolder = "127.0.0.1:8080"
-	//tabItemView.UriInput.Text = "127.0.0.1:9081"
+
+	// 本地获取uri
+	uri := StorageData.GetUris(tabItemView.ProtoName)
+	if len(uri.Uri) > 0 {
+		tabItemView.UriInput.Text = uri.Uri
+	}
+
 	// REQ TEXT
 	tabItemView.RequestText = widget.NewMultiLineEntry()
 	tabItemView.RequestText.PlaceHolder = "Editor(json)"
@@ -117,6 +127,12 @@ func (t *TabItemView) OnCall() {
 			return
 		}
 	}
+	// 保存uri信息到本地
+	StorageData.SetUris(data.Uri{
+		Proto: fmt.Sprintf("%s.proto", svcPath[0]),
+		Uri:   t.UriInput.Text,
+	})
+
 	//禁用按钮
 	t.CallButton.Disable()
 

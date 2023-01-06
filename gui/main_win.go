@@ -9,6 +9,7 @@ import (
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
 	"os"
+	"tins-rpc/data"
 	theme2 "tins-rpc/theme"
 )
 
@@ -27,6 +28,7 @@ var (
 	WindowHeight float32 = 800
 	MenuTree             = NewTreeData()
 	TabItemList          = make(map[string]*TabItemView)
+	StorageData          = data.NewStorage()
 )
 
 func init() {
