@@ -1,6 +1,7 @@
 package theme
 
 const (
+	Version     = "v1.0.2"
 	WelComeMsg  = "Welcome to TinsRPC Desktop"
 	WindowTitle = "TinsRPC - An rpc client tool"
 
@@ -15,4 +16,14 @@ TinsRPC desktop is a desktop software based on [Fyne](https://fyne.io/),
 which is purely built by personal interests.
 
 The Source code is [tins-rpc](https://github.com/zevfang/tins-rpc).`
+
+	CheckForUpdatesTitle = "Check For Updates…"
+
+	UpdateYesText = `
+There is a new version available.
+
+[tins-rpc %s](%s)`
+
+	UpdateNoText = `
+There are currently no updates available.`
 )
