@@ -10,20 +10,23 @@ import (
 )
 
 func mainMenu() *fyne.MainMenu {
+	_themeMenu := themeMenu()
+
 	sysMenu := &fyne.Menu{
-		Label: "System",
+		Label: tinsTheme.SystemTitle,
 		Items: []*fyne.MenuItem{
-			{Label: "Open File", Action: OpenFileAction},
+			{Label: tinsTheme.OpenFileTitle, Action: OpenFileAction},
+			_themeMenu,
 			fyne.NewMenuItemSeparator(),
-			{Label: "Quit", IsQuit: true, Action: QuitAction},
+			{Label: tinsTheme.QuitTitle, IsQuit: true, Action: QuitAction},
 		},
 	}
 
 	helpMenu := &fyne.Menu{
-		Label: "Help",
+		Label: tinsTheme.HelpTitle,
 		Items: []*fyne.MenuItem{
-			{Label: "About", Action: AboutAction},
-			{Label: "Check For Updates…", Action: CheckForUpdateAction},
+			{Label: tinsTheme.AboutTitle, Action: AboutAction},
+			{Label: tinsTheme.CheckForUpdatesTitle, Action: CheckForUpdateAction},
 		},
 	}
 	return fyne.NewMainMenu(sysMenu, helpMenu)
@@ -39,6 +42,44 @@ func QuitAction() {
 
 func AboutAction() {
 	showAbout()
+}
+
+func themeMenu() *fyne.MenuItem {
+	var (
+		themeOpt   *fyne.MenuItem
+		themeDark  *fyne.MenuItem
+		themeLight *fyne.MenuItem
+	)
+	// Option-Theme
+	themeDark = fyne.NewMenuItem(tinsTheme.MenuOptThemeDark, func() {
+		globalWin.app.Settings().SetTheme(tinsTheme.DarkTheme{})
+		themeDark.Checked = true
+		themeLight.Checked = false
+		_ = globalConfig.Theme.Set("__DARK__")
+		globalWin.mainMenu.Refresh()
+	})
+	themeDark.Checked = true
+	themeLight = fyne.NewMenuItem(tinsTheme.MenuOptThemeLight, func() {
+		globalWin.app.Settings().SetTheme(tinsTheme.LightTheme{})
+		themeDark.Checked = false
+		themeLight.Checked = true
+		_ = globalConfig.Theme.Set("__LIGHT__")
+		globalWin.mainMenu.Refresh()
+	})
+	themeLight.Checked = true
+	t, _ := globalConfig.Theme.Get()
+	if t == "__DARK__" {
+		themeLight.Checked = false
+	} else {
+		themeDark.Checked = false
+	}
+
+	themeOpt = fyne.NewMenuItem(tinsTheme.MenuOptTheme, nil)
+	themeOpt.ChildMenu = fyne.NewMenu("",
+		themeDark,
+		themeLight,
+	)
+	return themeOpt
 }
 
 func CheckForUpdateAction() {

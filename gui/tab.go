@@ -10,7 +10,7 @@ import (
 	"time"
 	"tins-rpc/call"
 	"tins-rpc/common"
-	theme2 "tins-rpc/theme"
+	tinsTheme "tins-rpc/theme"
 )
 
 type TabItemView struct {
@@ -54,7 +54,7 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 	tabItemView.MetadataText.SetPlaceHolder("METADATA")
 
 	// CALL BUTTON
-	tabItemView.CallButton = widget.NewButtonWithIcon("Run", theme2.ResourceRunIcon, func() {
+	tabItemView.CallButton = widget.NewButtonWithIcon(tinsTheme.RunButtonTitle, tinsTheme.ResourceRunIcon, func() {
 		tabItemView.OnCall()
 	})
 

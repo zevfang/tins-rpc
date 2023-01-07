@@ -1,29 +1,34 @@
 package theme
 
-const (
-	Version     = "v1.0.2"
-	WelComeMsg  = "Welcome to TinsRPC Desktop"
-	WindowTitle = "TinsRPC - An rpc client tool"
-
-	DismissText = "Cancel"
-	ConfirmText = "OK"
-
-	AboutTitle = "About"
-	AboutIntro = `## TinsRPC Desktop  
-
-TinsRPC desktop is a desktop software based on [Fyne](https://fyne.io/),  
-
-which is purely built by personal interests.
-
-The Source code is [tins-rpc](https://github.com/zevfang/tins-rpc).`
-
-	CheckForUpdatesTitle = "Check For Updates…"
-
-	UpdateYesText = `
-There is a new version available.
-
-[tins-rpc %s](%s)`
-
-	UpdateNoText = `
-There are currently no updates available.`
+import (
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/data/binding"
+	"reflect"
 )
+
+type Config struct {
+	Theme binding.String
+}
+
+func NewConfig() *Config {
+	c := &Config{
+		Theme: binding.NewString(),
+	}
+
+	_ = c.Theme.Set(fyne.CurrentApp().Preferences().StringWithFallback("theme", "__DARK__"))
+
+	in := make([]reflect.Value, 1)
+	in[0] = reflect.ValueOf(c)
+	s := reflect.ValueOf(c).Elem()
+	for i := 0; i < s.NumField(); i++ {
+		f := s.Field(i)
+		f.MethodByName("AddListener").Call(in)
+	}
+	return c
+}
+
+func (c *Config) DataChanged() {
+	// todo flush with field tag instead of the first param
+	theme, _ := c.Theme.Get()
+	fyne.CurrentApp().Preferences().SetString("theme", theme)
+}

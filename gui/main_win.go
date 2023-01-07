@@ -10,20 +10,22 @@ import (
 	"fyne.io/fyne/v2/widget"
 	"os"
 	"tins-rpc/data"
-	theme2 "tins-rpc/theme"
+	tinsTheme "tins-rpc/theme"
 )
 
 type MainWin struct {
-	app  fyne.App
-	win  fyne.Window
-	tabs *container.DocTabs
-	tree *widget.Tree
+	app      fyne.App
+	win      fyne.Window
+	tabs     *container.DocTabs
+	tree     *widget.Tree
+	mainMenu *fyne.MainMenu
 }
 
 var (
 	Version      = "v1.0.0"
 	AppID        = "com.tins.call.app"
 	globalWin    *MainWin
+	globalConfig *tinsTheme.Config
 	WindowWidth  float32 = 1400
 	WindowHeight float32 = 800
 	MenuTree             = NewTreeData()
@@ -39,35 +41,39 @@ func NewMainWin() *MainWin {
 	mainWin := new(MainWin)
 	// APP
 	mainWin.app = app.NewWithID(AppID)
-	mainWin.app.Settings().SetTheme(&theme2.LightTheme{})
-	mainWin.app.SetIcon(theme2.ResourceLogoIcon)
+	//mainWin.app.Settings().SetTheme(&tinsTheme.DarkTheme{})
+	mainWin.app.SetIcon(tinsTheme.ResourceLogoIcon)
+	globalConfig = tinsTheme.NewConfig()
+	// Theme
+	preTheme, _ := globalConfig.Theme.Get()
+	switch preTheme {
+	case "__DARK__":
+		mainWin.app.Settings().SetTheme(&tinsTheme.DarkTheme{})
+	case "__LIGHT__":
+		mainWin.app.Settings().SetTheme(&tinsTheme.LightTheme{})
+	}
 
 	//WIN
-	mainWin.win = mainWin.app.NewWindow(theme2.WindowTitle)
+	mainWin.win = mainWin.app.NewWindow(tinsTheme.WindowTitle)
 	mainWin.win.Resize(fyne.NewSize(WindowWidth, WindowHeight))
 	mainWin.win.SetPadded(false)
 	mainWin.win.SetMaster()      //退出窗体则退出程序
 	mainWin.win.CenterOnScreen() //屏幕中央
 
-	//MenuTree.TreeData = map[string][]string{
-	//	"":         {"ct.proto"},
-	//	"ct.proto": {"ct.Ct"},
-	//	"ct.Ct":    {"Ct.GetTable", "Ct.GetTopic"},
-	//}
 	// PROTO TREE LIST
 	mainWin.tree = menuTree()
 
 	// Refresh
-	refreshBtn := widget.NewButtonWithIcon("", theme2.ResourceRefreshIcon, func() {
+	refreshBtn := widget.NewButtonWithIcon("", tinsTheme.ResourceRefreshIcon, func() {
 
 	})
 	// CLEAR
-	clearBtn := widget.NewButtonWithIcon("", theme2.ResourceClearIcon, func() {
+	clearBtn := widget.NewButtonWithIcon("", tinsTheme.ResourceClearIcon, func() {
 		MenuTree.RemoveAll()
 		mainWin.tree.Refresh()
 	})
 	// OPEN FILE
-	openBtn := widget.NewButtonWithIcon("", theme2.ResourceAddIcon, func() {
+	openBtn := widget.NewButtonWithIcon("", tinsTheme.ResourceAddIcon, func() {
 		fileView := dialog.NewFileOpen(func(file fyne.URIReadCloser, err error) {
 			if file == nil {
 				return
@@ -117,7 +123,8 @@ func NewMainWin() *MainWin {
 
 	home := container.NewBorder(nil, nil, nil, nil, content)
 	mainWin.win.SetContent(home)
-	mainWin.win.SetMainMenu(mainMenu())
+	mainWin.mainMenu = mainMenu()
+	mainWin.win.SetMainMenu(mainWin.mainMenu)
 
 	globalWin = mainWin
 	return globalWin
