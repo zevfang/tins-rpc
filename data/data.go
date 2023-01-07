@@ -19,13 +19,8 @@ type Storage struct {
 }
 
 type LocalData struct {
-	// GUI hosts
-	Uris []Uri `json:"uris"`
-}
-
-type Uri struct {
-	Proto string `json:"proto"`
-	Uri   string `json:"uri"`
+	// GUI hosts k:proto v:uri
+	Uris map[string]string `json:"uris"`
 }
 
 func NewStorage() *Storage {
@@ -36,7 +31,7 @@ func NewStorage() *Storage {
 	if !exists {
 		CreateDir(storageDir)
 		data := LocalData{
-			Uris: []Uri{},
+			Uris: make(map[string]string),
 		}
 		b, _ := json.Marshal(&data)
 		SaveFile(s.FilePath, b)
@@ -44,31 +39,37 @@ func NewStorage() *Storage {
 	return s
 }
 
-func (s *Storage) GetUris(proto string) Uri {
+func (s *Storage) GetUris(proto string) string {
 	data := s.getData()
-	for _, uri := range data.Uris {
-		if proto == uri.Proto {
-			return uri
-		}
+	if _, found := data.Uris[proto]; found {
+		return data.Uris[proto]
 	}
-	return Uri{}
+	return ""
 }
 
-func (s *Storage) SetUris(uri Uri) {
+func (s *Storage) SetUris(proto, uri string) {
 	data := s.getData()
-	u := s.GetUris(uri.Proto)
-	if len(u.Proto) > 0 {
+	if data.Uris == nil {
 		return
 	}
-	data.Uris = append(data.Uris, uri)
-	b, _ := json.Marshal(&data)
+	data.Uris[proto] = uri
+	b, _ := json.Marshal(data)
 	SaveFile(s.FilePath, b)
 }
 
 func (s *Storage) getData() LocalData {
 	b := ReadFile(s.FilePath)
+	fmt.Println("file->", string(b))
 	data := LocalData{}
-	_ = json.Unmarshal(b, &data)
+	err := json.Unmarshal(b, &data)
+	if err != nil {
+		// 载入默认值
+		data.Uris = make(map[string]string)
+		dataJson, _ := json.Marshal(&data)
+		_ = os.Truncate(s.FilePath, 0) //清空文件
+		SaveFile(s.FilePath, dataJson)
+	}
+
 	return data
 }
 

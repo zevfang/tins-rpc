@@ -10,7 +10,6 @@ import (
 	"time"
 	"tins-rpc/call"
 	"tins-rpc/common"
-	"tins-rpc/data"
 	theme2 "tins-rpc/theme"
 )
 
@@ -37,8 +36,8 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 
 	// 本地获取uri
 	uri := StorageData.GetUris(tabItemView.ProtoName)
-	if len(uri.Uri) > 0 {
-		tabItemView.UriInput.Text = uri.Uri
+	if len(uri) > 0 {
+		tabItemView.UriInput.Text = uri
 	}
 
 	// REQ TEXT
@@ -128,10 +127,8 @@ func (t *TabItemView) OnCall() {
 		}
 	}
 	// 保存uri信息到本地
-	StorageData.SetUris(data.Uri{
-		Proto: fmt.Sprintf("%s.proto", svcPath[0]),
-		Uri:   t.UriInput.Text,
-	})
+	protoName := fmt.Sprintf("%s.proto", svcPath[0])
+	StorageData.SetUris(protoName, t.UriInput.Text)
 
 	//禁用按钮
 	t.CallButton.Disable()
