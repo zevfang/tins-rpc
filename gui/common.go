@@ -4,6 +4,6 @@ import (
 	"golang.org/x/text/message"
 )
 
-func I18n(content string) string {
-	return message.NewPrinter(Language).Sprintf(content)
+func I18n(content string, a ...interface{}) string {
+	return message.NewPrinter(Language).Sprintf(content, a...)
 }

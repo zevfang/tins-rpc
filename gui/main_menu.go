@@ -1,7 +1,6 @@
 package gui
 
 import (
-	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
@@ -133,7 +132,7 @@ func CheckForUpdateAction() {
 	var content *widget.Card
 	isUpdate, tagName, tagUrl := common.CheckForUpdates()
 	if isUpdate {
-		content = widget.NewCard("", "", widget.NewRichTextFromMarkdown(fmt.Sprintf(I18n(tinsTheme.UpdateYesText), tagName, tagUrl)))
+		content = widget.NewCard("", "", widget.NewRichTextFromMarkdown(I18n(tinsTheme.UpdateYesText, tagName, tagUrl)))
 	} else {
 		content = widget.NewCard("", "", widget.NewRichTextFromMarkdown(I18n(tinsTheme.UpdateNoText)))
 	}

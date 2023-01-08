@@ -9,7 +9,7 @@ const Version = "v1.0.2"
 
 var (
 	WelComeMsg = "Welcome to TinsRPC Client"
-	_          = message.SetString(language.Chinese, WelComeMsg, `欢迎使用TinsRPC(罐头)客户端`)
+	_          = message.SetString(language.Chinese, WelComeMsg, `欢迎使用TinsRPC客户端`)
 
 	WelComeTabTitle = "Welcome"
 	_               = message.SetString(language.Chinese, WelComeTabTitle, `欢迎`)
