@@ -8,81 +8,81 @@ import (
 const Version = "v1.0.2"
 
 var (
-	WelComeMsg = "欢迎使用TinsRPC"
-	_          = message.SetString(language.English, WelComeMsg, `Welcome to TinsRPC Desktop`)
+	WelComeMsg = "Welcome to TinsRPC Client"
+	_          = message.SetString(language.Chinese, WelComeMsg, `欢迎使用TinsRPC(罐头)客户端`)
 
-	WelComeTabTitle = "欢迎"
-	_               = message.SetString(language.English, WelComeTabTitle, `Welcome`)
+	WelComeTabTitle = "Welcome"
+	_               = message.SetString(language.Chinese, WelComeTabTitle, `欢迎`)
 
-	WindowTitle = "TinsRPC - RPC客户端工具"
-	_           = message.SetString(language.English, WindowTitle, `TinsRPC - An rpc client tool`)
+	WindowTitle = "TinsRPC"
+	_           = message.SetString(language.Chinese, WindowTitle, `TinsRPC(罐头)`)
 
-	MenuOptTheme = "主题"
-	_            = message.SetString(language.English, MenuOptTheme, `Theme`)
+	MenuOptTheme = "Theme"
+	_            = message.SetString(language.Chinese, MenuOptTheme, `主题`)
 
-	MenuOptThemeDark = "黑暗"
-	_                = message.SetString(language.English, MenuOptThemeDark, `Dark`)
+	MenuOptThemeDark = "Dark"
+	_                = message.SetString(language.Chinese, MenuOptThemeDark, `黑暗`)
 
-	MenuOptThemeLight = "明亮"
-	_                 = message.SetString(language.English, MenuOptThemeLight, `Light`)
+	MenuOptThemeLight = "Light"
+	_                 = message.SetString(language.Chinese, MenuOptThemeLight, `明亮`)
 
-	MenuOptLanguage = "语言"
-	_               = message.SetString(language.English, MenuOptLanguage, `Language`)
+	MenuOptLanguage = "Language"
+	_               = message.SetString(language.Chinese, MenuOptLanguage, `语言`)
 
-	MenuOptLanguageZhCN = "中文"
-	_                   = message.SetString(language.English, MenuOptLanguageZhCN, `Chinese`)
+	MenuOptLanguageZhCN = "Chinese"
+	_                   = message.SetString(language.Chinese, MenuOptLanguageZhCN, `中文`)
 
-	MenuOptLanguageEnUS = "英文"
-	_                   = message.SetString(language.English, MenuOptLanguageEnUS, `English`)
+	MenuOptLanguageEnUS = "English"
+	_                   = message.SetString(language.Chinese, MenuOptLanguageEnUS, "英文")
 
-	ConfirmText = "好"
-	_           = message.SetString(language.English, ConfirmText, `OK`)
+	ConfirmText = "OK"
+	_           = message.SetString(language.Chinese, ConfirmText, `好`)
 
-	SystemTitle = "系统"
-	_           = message.SetString(language.English, SystemTitle, `System`)
+	SystemTitle = "System"
+	_           = message.SetString(language.Chinese, SystemTitle, `系统`)
 
-	OpenFileTitle = "打开文件"
-	_             = message.SetString(language.English, OpenFileTitle, `Open File`)
+	OpenFileTitle = "Open File"
+	_             = message.SetString(language.Chinese, OpenFileTitle, `打开文件`)
 
-	QuitTitle = "退出"
-	_         = message.SetString(language.English, QuitTitle, `Quit`)
+	QuitTitle = "Quit"
+	_         = message.SetString(language.Chinese, QuitTitle, `退出`)
 
-	HelpTitle = "帮助"
-	_         = message.SetString(language.English, HelpTitle, `Help`)
+	HelpTitle = "Help"
+	_         = message.SetString(language.Chinese, HelpTitle, `帮助`)
 
-	AboutTitle = "关于"
-	_          = message.SetString(language.English, AboutTitle, `About`)
+	AboutTitle = "About"
+	_          = message.SetString(language.Chinese, AboutTitle, `关于`)
 
-	AboutIntro = `## TinsRPC 客户端工具
-
-TinsRPC是一款基于[Fyne](https://fyne.io/)的桌面软件，
-
-源代码仓库 [tins-rpc](https://github.com/zevfang/tins-rpc)。`
-	_ = message.SetString(language.English, AboutIntro, `## TinsRPC client tool  
+	AboutIntro = `## TinsRPC %s RPC Client  
 
 TinsRPC desktop is a desktop software based on [Fyne](https://fyne.io/),
 
-The source code is [tins-rpc](https://github.com/zevfang/tins-rpc).`)
+The source code is [tins-rpc](https://github.com/zevfang/tins-rpc).`
+	_ = message.SetString(language.Chinese, AboutIntro, `## TinsRPC %s 客户端工具
 
-	CheckForUpdatesTitle = "检查更新"
-	_                    = message.SetString(language.English, CheckForUpdatesTitle, `Check For Updates…`)
+TinsRPC是一款基于[Fyne](https://fyne.io/)的桌面软件，
 
-	UpdateYesText = `有可用的新版本。
+源代码仓库 [tins-rpc](https://github.com/zevfang/tins-rpc)。`)
+
+	CheckForUpdatesTitle = "Check For Updates…"
+	_                    = message.SetString(language.Chinese, CheckForUpdatesTitle, `检查更新`)
+
+	UpdateYesText = `There is a new version available.
 
 [tins-rpc %s](%s)`
-	_ = message.SetString(language.English, UpdateYesText, `There is a new version available.
+	_ = message.SetString(language.Chinese, UpdateYesText, `有可用的新版本。
 
 [tins-rpc %s](%s)`)
 
-	UpdateNoText = `目前没有可用的更新。`
-	_            = message.SetString(language.English, UpdateNoText, `There are currently no updates available.`)
+	UpdateNoText = `There are currently no updates available.`
+	_            = message.SetString(language.Chinese, UpdateNoText, `目前没有可用的更新`)
 
-	RunButtonTitle = "运行"
-	_              = message.SetString(language.English, RunButtonTitle, `Run`)
+	RunButtonTitle = "Run"
+	_              = message.SetString(language.Chinese, RunButtonTitle, `运行`)
 
-	PromptTitle = "提示"
-	_           = message.SetString(language.English, PromptTitle, `Prompt`)
+	PromptTitle = "Prompt"
+	_           = message.SetString(language.Chinese, PromptTitle, `提示`)
 
-	PromptRestartContentText = "重启应用后生效"
-	_                        = message.SetString(language.English, PromptRestartContentText, `Take effect after restarting the application`)
+	PromptRestartContentText = "Take effect after restarting the application"
+	_                        = message.SetString(language.Chinese, PromptRestartContentText, `重启应用后生效`)
 )
