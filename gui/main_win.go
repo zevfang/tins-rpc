@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -8,6 +9,7 @@ import (
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
+	"golang.org/x/text/language"
 	"os"
 	"tins-rpc/data"
 	tinsTheme "tins-rpc/theme"
@@ -23,7 +25,7 @@ type MainWin struct {
 
 var (
 	Version      = "v1.0.0"
-	AppID        = "com.tins.call.app"
+	AppID        = "com.tins.rpc.app"
 	globalWin    *MainWin
 	globalConfig *tinsTheme.Config
 	WindowWidth  float32 = 1400
@@ -31,6 +33,7 @@ var (
 	MenuTree             = NewTreeData()
 	TabItemList          = make(map[string]*TabItemView)
 	StorageData          = data.NewStorage()
+	Language     language.Tag
 )
 
 func init() {
@@ -52,9 +55,17 @@ func NewMainWin() *MainWin {
 	case "__LIGHT__":
 		mainWin.app.Settings().SetTheme(&tinsTheme.LightTheme{})
 	}
+	// Language
+	preLanguage, _ := globalConfig.Language.Get()
+	switch preLanguage {
+	case "__en-US__":
+		Language = language.English
+	case "__zh-CN__":
+		Language = language.Chinese
+	}
 
 	//WIN
-	mainWin.win = mainWin.app.NewWindow(tinsTheme.WindowTitle)
+	mainWin.win = mainWin.app.NewWindow(I18n(tinsTheme.WindowTitle))
 	mainWin.win.Resize(fyne.NewSize(WindowWidth, WindowHeight))
 	mainWin.win.SetPadded(false)
 	mainWin.win.SetMaster()      //退出窗体则退出程序
@@ -132,4 +143,8 @@ func NewMainWin() *MainWin {
 
 func (m *MainWin) Run() {
 	m.win.ShowAndRun()
+	m.win.SetCloseIntercept(func() {
+		//TODO 这里是否可以重启程序？
+		fmt.Println("close")
+	})
 }

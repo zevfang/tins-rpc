@@ -5,17 +5,17 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/widget"
-	theme2 "tins-rpc/theme"
+	tinsTheme "tins-rpc/theme"
 )
 
 func initWelcome() *container.TabItem {
 	var welcomeTabItem *container.TabItem
-	logo := canvas.NewImageFromResource(theme2.ResourceLogoIcon)
+	logo := canvas.NewImageFromResource(tinsTheme.ResourceLogoIcon)
 	logo.FillMode = canvas.ImageFillContain
 	logo.SetMinSize(fyne.NewSize(362*0.8, 192*0.8))
 
-	welcomeTabItem = container.NewTabItemWithIcon("WelCome", nil, nil)
-	wel := widget.NewRichTextFromMarkdown("# " + theme2.WelComeMsg)
+	welcomeTabItem = container.NewTabItemWithIcon(I18n(tinsTheme.WelComeTabTitle), nil, nil)
+	wel := widget.NewRichTextFromMarkdown("# " + I18n(tinsTheme.WelComeMsg))
 	for i := range wel.Segments {
 		if seg, ok := wel.Segments[i].(*widget.TextSegment); ok {
 			seg.Style.Alignment = fyne.TextAlignCenter

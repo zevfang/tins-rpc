@@ -8,7 +8,7 @@ import (
 	pp "github.com/emicklei/proto"
 	"tins-rpc/call"
 	"tins-rpc/common"
-	theme2 "tins-rpc/theme"
+	tinsTheme "tins-rpc/theme"
 )
 
 func menuTree() *widget.Tree {
@@ -25,18 +25,18 @@ func menuTree() *widget.Tree {
 		//create
 		func(b bool) fyne.CanvasObject {
 			return container.NewHBox(
-				widget.NewIcon(theme2.ResourceMSquareIcon),
+				widget.NewIcon(tinsTheme.ResourceMSquareIcon),
 				widget.NewLabelWithStyle("", fyne.TextAlignLeading, fyne.TextStyle{}))
 		},
 		//update
 		func(uid widget.TreeNodeID, b bool, object fyne.CanvasObject) {
 			switch MenuTree.NodeType(uid) {
 			case ProtoProto:
-				object.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(theme2.ResourcePSquareIcon)
+				object.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(tinsTheme.ResourcePSquareIcon)
 			case ProtoService:
-				object.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(theme2.ResourceSSquareIcon)
+				object.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(tinsTheme.ResourceSSquareIcon)
 			case ProtoMethod:
-				object.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(theme2.ResourceMSquareIcon)
+				object.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(tinsTheme.ResourceMSquareIcon)
 			}
 			object.(*fyne.Container).Objects[1].(*widget.Label).SetText(uid)
 		},
@@ -48,7 +48,7 @@ func menuTree() *widget.Tree {
 		}
 		// 删除 New Tab
 		for i, item := range globalWin.tabs.Items {
-			if item.Text == "WelCome" {
+			if item.Text == tinsTheme.WelComeTabTitle {
 				globalWin.tabs.RemoveIndex(i)
 			}
 		}

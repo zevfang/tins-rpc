@@ -7,15 +7,18 @@ import (
 )
 
 type Config struct {
-	Theme binding.String
+	Theme    binding.String
+	Language binding.String
 }
 
 func NewConfig() *Config {
 	c := &Config{
-		Theme: binding.NewString(),
+		Theme:    binding.NewString(),
+		Language: binding.NewString(),
 	}
 
 	_ = c.Theme.Set(fyne.CurrentApp().Preferences().StringWithFallback("theme", "__DARK__"))
+	_ = c.Language.Set(fyne.CurrentApp().Preferences().StringWithFallback("language", "__en-US__"))
 
 	in := make([]reflect.Value, 1)
 	in[0] = reflect.ValueOf(c)
@@ -28,7 +31,9 @@ func NewConfig() *Config {
 }
 
 func (c *Config) DataChanged() {
-	// todo flush with field tag instead of the first param
 	theme, _ := c.Theme.Get()
 	fyne.CurrentApp().Preferences().SetString("theme", theme)
+
+	language, _ := c.Language.Get()
+	fyne.CurrentApp().Preferences().SetString("language", language)
 }

@@ -11,7 +11,10 @@ var (
 	WelComeMsg = "欢迎使用TinsRPC"
 	_          = message.SetString(language.English, WelComeMsg, `Welcome to TinsRPC Desktop`)
 
-	WindowTitle = "TinsRPC - RPC客户端请求工具"
+	WelComeTabTitle = "欢迎"
+	_               = message.SetString(language.English, WelComeTabTitle, `Welcome`)
+
+	WindowTitle = "TinsRPC - RPC客户端工具"
 	_           = message.SetString(language.English, WindowTitle, `TinsRPC - An rpc client tool`)
 
 	MenuOptTheme = "主题"
@@ -22,6 +25,15 @@ var (
 
 	MenuOptThemeLight = "明亮"
 	_                 = message.SetString(language.English, MenuOptThemeLight, `Light`)
+
+	MenuOptLanguage = "语言"
+	_               = message.SetString(language.English, MenuOptLanguage, `Language`)
+
+	MenuOptLanguageZhCN = "中文"
+	_                   = message.SetString(language.English, MenuOptLanguageZhCN, `Chinese`)
+
+	MenuOptLanguageEnUS = "英文"
+	_                   = message.SetString(language.English, MenuOptLanguageEnUS, `English`)
 
 	ConfirmText = "好"
 	_           = message.SetString(language.English, ConfirmText, `OK`)
@@ -41,20 +53,16 @@ var (
 	AboutTitle = "关于"
 	_          = message.SetString(language.English, AboutTitle, `About`)
 
-	AboutIntro = `## TinsRPC 桌面
+	AboutIntro = `## TinsRPC 客户端工具
 
 TinsRPC是一款基于[Fyne](https://fyne.io/)的桌面软件，
 
-这纯粹是出于个人兴趣而建立的。
+源代码仓库 [tins-rpc](https://github.com/zevfang/tins-rpc)。`
+	_ = message.SetString(language.English, AboutIntro, `## TinsRPC client tool  
 
-源代码是 [tins-rpc](https://github.com/zevfang/tins-rpc)。`
-	_ = message.SetString(language.English, AboutIntro, `## TinsRPC Desktop  
+TinsRPC desktop is a desktop software based on [Fyne](https://fyne.io/),
 
-TinsRPC desktop is a desktop software based on [Fyne](https://fyne.io/),  
-
-which is purely built by personal interests.
-
-The Source code is [tins-rpc](https://github.com/zevfang/tins-rpc).`)
+The source code is [tins-rpc](https://github.com/zevfang/tins-rpc).`)
 
 	CheckForUpdatesTitle = "检查更新"
 	_                    = message.SetString(language.English, CheckForUpdatesTitle, `Check For Updates…`)
@@ -71,4 +79,10 @@ The Source code is [tins-rpc](https://github.com/zevfang/tins-rpc).`)
 
 	RunButtonTitle = "运行"
 	_              = message.SetString(language.English, RunButtonTitle, `Run`)
+
+	PromptTitle = "提示"
+	_           = message.SetString(language.English, PromptTitle, `Prompt`)
+
+	PromptRestartContentText = "重启应用后生效"
+	_                        = message.SetString(language.English, PromptRestartContentText, `Take effect after restarting the application`)
 )

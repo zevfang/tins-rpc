@@ -5,43 +5,33 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
+	"golang.org/x/text/language"
 	"tins-rpc/common"
 	tinsTheme "tins-rpc/theme"
 )
 
 func mainMenu() *fyne.MainMenu {
 	_themeMenu := themeMenu()
-
+	_i18nMenu := i18nMenu()
 	sysMenu := &fyne.Menu{
-		Label: tinsTheme.SystemTitle,
+		Label: I18n(tinsTheme.SystemTitle),
 		Items: []*fyne.MenuItem{
-			{Label: tinsTheme.OpenFileTitle, Action: OpenFileAction},
+			{Label: I18n(tinsTheme.OpenFileTitle), Action: OpenFileAction},
 			_themeMenu,
+			_i18nMenu,
 			fyne.NewMenuItemSeparator(),
-			{Label: tinsTheme.QuitTitle, IsQuit: true, Action: QuitAction},
+			{Label: I18n(tinsTheme.QuitTitle), IsQuit: true, Action: QuitAction},
 		},
 	}
 
 	helpMenu := &fyne.Menu{
-		Label: tinsTheme.HelpTitle,
+		Label: I18n(tinsTheme.HelpTitle),
 		Items: []*fyne.MenuItem{
-			{Label: tinsTheme.AboutTitle, Action: AboutAction},
-			{Label: tinsTheme.CheckForUpdatesTitle, Action: CheckForUpdateAction},
+			{Label: I18n(tinsTheme.AboutTitle), Action: AboutAction},
+			{Label: I18n(tinsTheme.CheckForUpdatesTitle), Action: CheckForUpdateAction},
 		},
 	}
 	return fyne.NewMainMenu(sysMenu, helpMenu)
-}
-
-func OpenFileAction() {
-
-}
-
-func QuitAction() {
-
-}
-
-func AboutAction() {
-	showAbout()
 }
 
 func themeMenu() *fyne.MenuItem {
@@ -51,7 +41,7 @@ func themeMenu() *fyne.MenuItem {
 		themeLight *fyne.MenuItem
 	)
 	// Option-Theme
-	themeDark = fyne.NewMenuItem(tinsTheme.MenuOptThemeDark, func() {
+	themeDark = fyne.NewMenuItem(I18n(tinsTheme.MenuOptThemeDark), func() {
 		globalWin.app.Settings().SetTheme(tinsTheme.DarkTheme{})
 		themeDark.Checked = true
 		themeLight.Checked = false
@@ -59,7 +49,7 @@ func themeMenu() *fyne.MenuItem {
 		globalWin.mainMenu.Refresh()
 	})
 	themeDark.Checked = true
-	themeLight = fyne.NewMenuItem(tinsTheme.MenuOptThemeLight, func() {
+	themeLight = fyne.NewMenuItem(I18n(tinsTheme.MenuOptThemeLight), func() {
 		globalWin.app.Settings().SetTheme(tinsTheme.LightTheme{})
 		themeDark.Checked = false
 		themeLight.Checked = true
@@ -74,7 +64,7 @@ func themeMenu() *fyne.MenuItem {
 		themeDark.Checked = false
 	}
 
-	themeOpt = fyne.NewMenuItem(tinsTheme.MenuOptTheme, nil)
+	themeOpt = fyne.NewMenuItem(I18n(tinsTheme.MenuOptTheme), nil)
 	themeOpt.ChildMenu = fyne.NewMenu("",
 		themeDark,
 		themeLight,
@@ -82,14 +72,71 @@ func themeMenu() *fyne.MenuItem {
 	return themeOpt
 }
 
+func i18nMenu() *fyne.MenuItem {
+	dialogRestartTip := func() dialog.Dialog {
+		content := widget.NewCard("", "", widget.NewRichTextFromMarkdown(I18n(tinsTheme.PromptRestartContentText)))
+		return dialog.NewCustom(I18n(tinsTheme.PromptTitle), I18n(tinsTheme.ConfirmText), content, globalWin.win)
+	}
+	var (
+		i18nOpt  *fyne.MenuItem
+		i18nEnUs *fyne.MenuItem
+		i18nZhCn *fyne.MenuItem
+	)
+	// en-US
+	i18nEnUs = fyne.NewMenuItem(I18n(tinsTheme.MenuOptLanguageEnUS), func() {
+		i18nEnUs.Checked = true
+		i18nZhCn.Checked = false
+		_ = globalConfig.Language.Set("__en-US__")
+		globalWin.mainMenu.Refresh()
+		dialogRestartTip().Show()
+		Language = language.English
+	})
+	i18nEnUs.Checked = true
+	// zh-CN
+	i18nZhCn = fyne.NewMenuItem(I18n(tinsTheme.MenuOptLanguageZhCN), func() {
+		i18nEnUs.Checked = false
+		i18nZhCn.Checked = true
+		_ = globalConfig.Language.Set("__zh-CN__")
+		globalWin.mainMenu.Refresh()
+		dialogRestartTip().Show()
+		Language = language.Chinese
+	})
+	i18nZhCn.Checked = true
+	t, _ := globalConfig.Language.Get()
+	if t == "__zh-CN__" {
+		i18nEnUs.Checked = false
+	} else {
+		i18nZhCn.Checked = false
+	}
+
+	i18nOpt = fyne.NewMenuItem(I18n(tinsTheme.MenuOptLanguage), nil)
+	i18nOpt.ChildMenu = fyne.NewMenu("",
+		i18nEnUs,
+		i18nZhCn,
+	)
+	return i18nOpt
+}
+
+func OpenFileAction() {
+
+}
+
+func QuitAction() {
+	globalWin.app.Quit()
+}
+
+func AboutAction() {
+	showAbout()
+}
+
 func CheckForUpdateAction() {
 	var content *widget.Card
 	isUpdate, tagName, tagUrl := common.CheckForUpdates()
 	if isUpdate {
-		content = widget.NewCard("", "", widget.NewRichTextFromMarkdown(fmt.Sprintf(tinsTheme.UpdateYesText, tagName, tagUrl)))
+		content = widget.NewCard("", "", widget.NewRichTextFromMarkdown(fmt.Sprintf(I18n(tinsTheme.UpdateYesText), tagName, tagUrl)))
 	} else {
-		content = widget.NewCard("", "", widget.NewRichTextFromMarkdown(tinsTheme.UpdateNoText))
+		content = widget.NewCard("", "", widget.NewRichTextFromMarkdown(I18n(tinsTheme.UpdateNoText)))
 	}
-	updateDialog := dialog.NewCustom(tinsTheme.CheckForUpdatesTitle, tinsTheme.ConfirmText, content, globalWin.win)
+	updateDialog := dialog.NewCustom(I18n(tinsTheme.CheckForUpdatesTitle), I18n(tinsTheme.ConfirmText), content, globalWin.win)
 	updateDialog.Show()
 }

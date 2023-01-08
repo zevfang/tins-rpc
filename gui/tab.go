@@ -54,7 +54,7 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 	tabItemView.MetadataText.SetPlaceHolder("METADATA")
 
 	// CALL BUTTON
-	tabItemView.CallButton = widget.NewButtonWithIcon(tinsTheme.RunButtonTitle, tinsTheme.ResourceRunIcon, func() {
+	tabItemView.CallButton = widget.NewButtonWithIcon(I18n(tinsTheme.RunButtonTitle), tinsTheme.ResourceRunIcon, func() {
 		tabItemView.OnCall()
 	})
 
