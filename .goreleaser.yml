@@ -1,0 +1,30 @@
+project_name: {{ .PluginName }}
+
+archives:
+  - id: {{ .PluginName }}
+    builds:
+      - {{ .PluginName }}
+    name_template: {{ `"{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"` }}
+    format_overrides:
+      - goos: windows
+        format: zip
+
+builds:
+  - id: {{ .PluginName }}
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - arm64
+      - amd64
+      - "386"
+    env:
+      - CGO_ENABLED=0
+      - GO111MODULE=on
+    main: ./main.go
+
+release:
+  github:
+    owner: {{ .Owner }}
+    name: {{ .Repo }}
