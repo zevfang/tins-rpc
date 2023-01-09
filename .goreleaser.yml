@@ -4,7 +4,7 @@ archives:
   - id: {{ .PluginName }}
     builds:
       - {{ .PluginName }}
-    name_template: {{ `"{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"` }}
+    name_template: "{{ .ProjectName }}-v{{ .Version }}_{{ .Os }}_{{ .Arch }}"
     format_overrides:
       - goos: windows
         format: zip
@@ -22,7 +22,7 @@ builds:
     env:
       - CGO_ENABLED=0
       - GO111MODULE=on
-    main: ./main.go
+    main: .
 
 release:
   github:
