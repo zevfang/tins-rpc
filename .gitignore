@@ -45,3 +45,7 @@ Temporary Items
 .vscode
 .env
 .exe
+
+tins-rpc
+vendor
+dist

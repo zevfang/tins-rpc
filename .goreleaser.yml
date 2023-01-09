@@ -1,16 +1,9 @@
 project_name: tins-rpc
-
-archives:
-  - id: tins-rpc
-    files:
-      - README.md
-    builds:
-      - tins-rpc
-    name_template: '{{.ProjectName}}-v{{.Version}}_{{.Os}}_{{.Arch}}'
-    format_overrides:
-      - goos: windows
-        format: zip
-
+env:
+  - GO111MODULE=on
+before:
+  hooks:
+    - go mod tidy
 builds:
   - id: tins-rpc
     binary: tins-rpc
@@ -24,8 +17,15 @@ builds:
       - "386"
     env:
       - CGO_ENABLED=0
-      - GO111MODULE=on
     main: .
+archives:
+  - id: tins-rpc
+    builds:
+      - tins-rpc
+    name_template: '{{.ProjectName}}-v{{.Version}}_{{.Os}}_{{.Arch}}'
+    format_overrides:
+      - goos: windows
+        format: zip
 
 release:
   github:
