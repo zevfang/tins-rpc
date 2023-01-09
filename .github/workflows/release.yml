@@ -22,7 +22,7 @@ jobs:
       - name: GoReleaser
         uses: goreleaser/goreleaser-action@v4
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GORELEASER_TOKEN }}
         with:
           distribution: goreleaser
           version: latest
