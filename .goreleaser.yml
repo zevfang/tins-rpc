@@ -1,16 +1,23 @@
-project_name: {{ .PluginName }}
+project_name: tins-rpc
+
+before:
+  hooks:
+    - go mod tidy
 
 archives:
-  - id: {{ .PluginName }}
+  - id: tins-rpc
+    files:
+      - README.md
     builds:
-      - {{ .PluginName }}
-    name_template: "{{ .ProjectName }}-v{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+      - tins-rpc
+    name_template: '{{.ProjectName}}-v{{.Version}}_{{.Os}}_{{.Arch}}'
     format_overrides:
       - goos: windows
         format: zip
 
 builds:
-  - id: {{ .PluginName }}
+  - id: tins-rpc
+    binary: tins-rpc
     goos:
       - linux
       - windows
@@ -26,5 +33,5 @@ builds:
 
 release:
   github:
-    owner: {{ .Owner }}
-    name: {{ .Repo }}
+    owner: zevfang
+    name: tins-rpc
