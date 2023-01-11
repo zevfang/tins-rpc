@@ -5,8 +5,6 @@ import (
 	"golang.org/x/text/message"
 )
 
-const Version = "v1.0.3"
-
 var (
 	WelComeMsg = "Welcome to TinsRPC Client"
 	_          = message.SetString(language.Chinese, WelComeMsg, `欢迎使用TinsRPC客户端`)

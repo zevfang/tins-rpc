@@ -8,8 +8,9 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"tins-rpc/theme"
 )
+
+const Version = "v1.0.3"
 
 const releasesUrl = "https://api.github.com/repos/zevfang/tins-rpc/releases/latest"
 
@@ -17,7 +18,7 @@ const releasesUrl = "https://api.github.com/repos/zevfang/tins-rpc/releases/late
 func CheckForUpdates() (bool, string, string) {
 	v := GetLastVersion()
 	v1 := getVersionInt(v.TagName)
-	v2 := getVersionInt(theme.Version)
+	v2 := getVersionInt(Version)
 	for i := 0; i < 3; i++ {
 		if v1[i] > v2[i] {
 			return true, v.TagName, v.HtmlUrl
@@ -26,6 +27,7 @@ func CheckForUpdates() (bool, string, string) {
 	return false, "", ""
 }
 
+// getVersionInt 拆分版本号
 func getVersionInt(v string) [3]int {
 	v = strings.TrimLeft(v, "v")
 	arr := strings.SplitN(v, ".", 3)
