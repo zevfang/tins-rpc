@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
+	"strings"
 	"time"
 	"tins-rpc/theme"
 )
@@ -14,10 +16,24 @@ const releasesUrl = "https://api.github.com/repos/zevfang/tins-rpc/releases/late
 // CheckForUpdates 检测最新版本
 func CheckForUpdates() (bool, string, string) {
 	v := GetLastVersion()
-	if v.TagName != theme.Version {
-		return true, v.TagName, v.HtmlUrl
+	v1 := getVersionInt(v.TagName)
+	v2 := getVersionInt(theme.Version)
+	for i := 0; i < 3; i++ {
+		if v1[i] > v2[i] {
+			return true, v.TagName, v.HtmlUrl
+		}
 	}
 	return false, "", ""
+}
+
+func getVersionInt(v string) [3]int {
+	v = strings.TrimLeft(v, "v")
+	arr := strings.SplitN(v, ".", 3)
+	var arrInt [3]int
+	for i, _ := range arr {
+		arrInt[i], _ = strconv.Atoi(arr[i])
+	}
+	return arrInt
 }
 
 // GetLastVersion 获取最后版本号
