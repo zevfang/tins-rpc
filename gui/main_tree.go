@@ -115,6 +115,17 @@ func (t *TreeData) Append(filePath string) error {
 	// 转换为tree结构
 	treeData := t.Parse(definitions)
 	for s, nodes := range treeData {
+		// 删除旧节点元素（幂等替换）
+		if _, found := t.ProtoData[s]; found {
+			for i := 0; i < len(t.ProtoData[s]); i++ {
+				for j := 0; j < len(nodes); j++ {
+					if t.ProtoData[s][i].NodeID == nodes[j].NodeID {
+						t.ProtoData[s] = append(t.ProtoData[s][:i], t.ProtoData[s][i+1:]...)
+					}
+				}
+			}
+		}
+		// 加入新节点元素
 		t.ProtoData[s] = append(t.ProtoData[s], nodes...)
 	}
 	return nil
