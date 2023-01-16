@@ -87,6 +87,7 @@ const (
 )
 
 type TreeData struct {
+	Files     map[string]struct{}
 	ProtoData map[string][]TreeNode
 	JsonData  map[string]string // {Service.Rpc}:{RequestJsonString}
 	ProtoFds  map[string]call.ProtoDescriptor
@@ -95,12 +96,14 @@ type TreeData struct {
 type TreeNode struct {
 	NodeID  string
 	Type    string
+	Path    string
 	Data    interface{}
 	JsonStr string
 }
 
 func NewTreeData() *TreeData {
 	t := &TreeData{
+		Files:     make(map[string]struct{}),
 		ProtoData: make(map[string][]TreeNode),
 		ProtoFds:  make(map[string]call.ProtoDescriptor),
 	}
@@ -111,33 +114,43 @@ func NewTreeData() *TreeData {
 func (t *TreeData) Append(filePath string) error {
 	// 解析proto到definit
 	definitions := common.NewDefinitions()
-	_ = definitions.ReadFile(filePath)
+	if err := definitions.ReadFile(filePath); err != nil {
+		return err
+	}
 	// 转换为tree结构
-	treeData := t.Parse(definitions)
+	treeData := t.Parse(filePath, definitions)
 	for s, nodes := range treeData {
-		// 删除旧节点元素（幂等替换）
+		// 删除旧节点元素
 		if _, found := t.ProtoData[s]; found {
-			for i := 0; i < len(t.ProtoData[s]); i++ {
-				for j := 0; j < len(nodes); j++ {
-					if t.ProtoData[s][i].NodeID == nodes[j].NodeID {
-						t.ProtoData[s] = append(t.ProtoData[s][:i], t.ProtoData[s][i+1:]...)
+			var datum []TreeNode
+			for _, oldNode := range t.ProtoData[s] {
+				for _, newNode := range nodes {
+					// 相同path清除
+					if oldNode.Path == newNode.Path {
+						continue
 					}
+					datum = append(datum, oldNode)
 				}
 			}
+			t.ProtoData[s] = datum
 		}
 		// 加入新节点元素
 		t.ProtoData[s] = append(t.ProtoData[s], nodes...)
 	}
+	// 保存.proto地址列表
+	t.Files[filePath] = struct{}{}
 	return nil
 }
 
-func (t *TreeData) Parse(d *common.Definitions) map[string][]TreeNode {
+func (t *TreeData) Parse(filePath string, d *common.Definitions) map[string][]TreeNode {
 	msgJson := common.NewDecoder(d).DecodeAll()
 	data := make(map[string][]TreeNode)
 	// "":greeter.proto
+
 	data[""] = append(data[""], TreeNode{
 		NodeID:  d.GetFileName(),
 		Type:    ProtoProto,
+		Path:    filePath,
 		Data:    nil,
 		JsonStr: "",
 	})
@@ -147,6 +160,7 @@ func (t *TreeData) Parse(d *common.Definitions) map[string][]TreeNode {
 		data[d.GetFileName()] = append(data[d.GetFileName()], TreeNode{
 			NodeID:  newSvcName,
 			Type:    ProtoService,
+			Path:    filePath,
 			Data:    svcDef,
 			JsonStr: "",
 		})
@@ -157,6 +171,7 @@ func (t *TreeData) Parse(d *common.Definitions) map[string][]TreeNode {
 				data[newSvcName] = append(data[newSvcName], TreeNode{
 					NodeID:  rpcData.Name,
 					Type:    ProtoMethod,
+					Path:    filePath,
 					Data:    rpcData,
 					JsonStr: msgJson[rpcData.RequestType],
 				})
@@ -222,4 +237,15 @@ func (t *TreeData) RequestJson(uid string) string {
 func (t *TreeData) RemoveAll() {
 	t.ProtoData = map[string][]TreeNode{}
 	t.ProtoFds = map[string]call.ProtoDescriptor{}
+}
+
+func (t *TreeData) RefreshAll() {
+	for filePath, _ := range t.Files {
+		err := t.Append(filePath)
+		if err != nil {
+			//TODO 如果文件不存在
+			fmt.Println("Refresh fail")
+			continue
+		}
+	}
 }

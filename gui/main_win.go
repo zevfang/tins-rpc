@@ -76,7 +76,8 @@ func NewMainWin() *MainWin {
 
 	// Refresh
 	refreshBtn := widget.NewButtonWithIcon("", tinsTheme.ResourceRefreshIcon, func() {
-
+		MenuTree.RefreshAll()
+		mainWin.tree.Refresh()
 	})
 	// CLEAR
 	clearBtn := widget.NewButtonWithIcon("", tinsTheme.ResourceClearIcon, func() {
