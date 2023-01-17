@@ -21,6 +21,7 @@ type TabItemView struct {
 	RpcSelect     *widget.Select
 	UsedTimeLabel *widget.Label
 	CallButton    *widget.Button
+	CodeText      *widget.Entry //浏览proto源代码
 	SelectTree    string
 	ProtoName     string
 	TabItem       *container.TabItem
@@ -163,4 +164,14 @@ func (t *TabItemView) OnCall() {
 		t.CallButton.Enable()
 	}()
 
+}
+
+func AppendTabItemCodeView(tabTitle string, protoBody string, tabs *container.DocTabs) *TabItemView {
+	tabItemCodeView := &TabItemView{}
+	tabItemCodeView.CodeText = widget.NewMultiLineEntry()
+	tabItemCodeView.CodeText.Text = protoBody
+	contentPanel := container.NewBorder(nil, nil, nil, nil, tabItemCodeView.CodeText)
+	tabItemCodeView.TabItem = container.NewTabItem(tabTitle, contentPanel)
+	tabs.Append(tabItemCodeView.TabItem)
+	return tabItemCodeView
 }

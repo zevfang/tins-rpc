@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 	pp "github.com/emicklei/proto"
 	"tins-rpc/call"
@@ -24,15 +25,23 @@ func menuTree() *widget.Tree {
 		},
 		//create
 		func(b bool) fyne.CanvasObject {
+			codeBtnIcon := widget.NewButtonWithIcon("", tinsTheme.ResourceBrowseIcon, nil)
+			codeBtnIcon.Hide()
 			return container.NewHBox(
 				widget.NewIcon(tinsTheme.ResourceMSquareIcon),
-				widget.NewLabelWithStyle("", fyne.TextAlignLeading, fyne.TextStyle{}))
+				widget.NewLabelWithStyle("", fyne.TextAlignLeading, fyne.TextStyle{}),
+				layout.NewSpacer(),
+				codeBtnIcon,
+			)
 		},
 		//update
 		func(uid widget.TreeNodeID, b bool, object fyne.CanvasObject) {
 			switch MenuTree.NodeType(uid) {
 			case ProtoProto:
 				object.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(tinsTheme.ResourcePSquareIcon)
+				codeBtn := object.(*fyne.Container).Objects[3].(*widget.Button)
+				codeBtn.OnTapped = CodeViewTapped(uid)
+				codeBtn.Show()
 			case ProtoService:
 				object.(*fyne.Container).Objects[0].(*widget.Icon).SetResource(tinsTheme.ResourceSSquareIcon)
 			case ProtoMethod:
@@ -80,6 +89,24 @@ func menuTree() *widget.Tree {
 	return tree
 }
 
+// CodeViewTapped 预览源代码事件
+func CodeViewTapped(uid string) func() {
+	return func() {
+		// 检测打开并选中
+		if _, ok := TabItemList[uid]; ok {
+			//设置选中
+			globalWin.tabs.Select(TabItemList[uid].TabItem)
+			return
+		}
+		codeBody := MenuTree.ProtoBody(uid)
+		tabItem := AppendTabItemCodeView(uid, codeBody, globalWin.tabs)
+		//保存TabItem
+		TabItemList[uid] = tabItem
+		//设置选中
+		globalWin.tabs.Select(tabItem.TabItem)
+	}
+}
+
 const (
 	ProtoProto   = "proto"   //文件
 	ProtoService = "service" //服务
@@ -87,10 +114,11 @@ const (
 )
 
 type TreeData struct {
-	Files     map[string]struct{}
-	ProtoData map[string][]TreeNode
-	JsonData  map[string]string // {Service.Rpc}:{RequestJsonString}
-	ProtoFds  map[string]call.ProtoDescriptor
+	ProtoKeyPath map[string]string
+	Files        map[string]struct{}
+	ProtoData    map[string][]TreeNode
+	JsonData     map[string]string // {Service.Rpc}:{RequestJsonString}
+	ProtoFds     map[string]call.ProtoDescriptor
 }
 
 type TreeNode struct {
@@ -103,9 +131,10 @@ type TreeNode struct {
 
 func NewTreeData() *TreeData {
 	t := &TreeData{
-		Files:     make(map[string]struct{}),
-		ProtoData: make(map[string][]TreeNode),
-		ProtoFds:  make(map[string]call.ProtoDescriptor),
+		ProtoKeyPath: make(map[string]string),
+		Files:        make(map[string]struct{}),
+		ProtoData:    make(map[string][]TreeNode),
+		ProtoFds:     make(map[string]call.ProtoDescriptor),
 	}
 	t.ProtoData[""] = make([]TreeNode, 0) //初始化根节点
 	return t
@@ -139,6 +168,7 @@ func (t *TreeData) Append(filePath string) error {
 	}
 	// 保存.proto地址列表
 	t.Files[filePath] = struct{}{}
+	t.ProtoKeyPath[definitions.GetFileName()] = definitions.GetFileBody()
 	return nil
 }
 
@@ -235,6 +265,7 @@ func (t *TreeData) RequestJson(uid string) string {
 }
 
 func (t *TreeData) RemoveAll() {
+	t.Files = map[string]struct{}{}
 	t.ProtoData = map[string][]TreeNode{}
 	t.ProtoFds = map[string]call.ProtoDescriptor{}
 }
@@ -248,4 +279,11 @@ func (t *TreeData) RefreshAll() {
 			continue
 		}
 	}
+}
+
+func (t *TreeData) ProtoBody(uid string) string {
+	if _, found := t.ProtoKeyPath[uid]; found {
+		return t.ProtoKeyPath[uid]
+	}
+	return ""
 }

@@ -16,6 +16,7 @@ import (
 type Definitions struct {
 	fd                *desc.FileDescriptor
 	fileNamesRead     []string
+	fileBody          string
 	fileNameToPackage map[string]string
 	fileName          string                 // ct.proto
 	pkgName           string                 // ct
@@ -27,6 +28,7 @@ type Definitions struct {
 func NewDefinitions() *Definitions {
 	return &Definitions{
 		fileNamesRead:     []string{},
+		fileBody:          "",
 		fileNameToPackage: map[string]string{},
 		fileName:          "",
 		pkgName:           "",
@@ -64,6 +66,7 @@ func (d *Definitions) ReadFrom(filepath string, reader io.Reader) error {
 	}
 	pkg := packageOf(def)
 	d.fileNameToPackage[filepath] = pkg
+	d.fileBody = string(data)
 	d.fileName = path.Base(filepath)
 	d.pkgName = pkg
 	// parse service
@@ -85,6 +88,10 @@ func (d *Definitions) GetFd() *desc.FileDescriptor {
 
 func (d *Definitions) GetFileName() string {
 	return d.fileName
+}
+
+func (d *Definitions) GetFileBody() string {
+	return d.fileBody
 }
 
 func (d *Definitions) GetPkgName() string {

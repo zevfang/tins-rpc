@@ -14,5 +14,7 @@ fyne bundle -pkg theme -name ResourceMSquareIcon -a -o ../theme/icons.go m_squar
 fyne bundle -pkg theme -name ResourceAddIcon -a -o ../theme/icons.go add.png
 fyne bundle -pkg theme -name ResourceClearIcon -a -o ../theme/icons.go clear.png
 fyne bundle -pkg theme -name ResourceRefreshIcon -a -o ../theme/icons.go refresh.png
+fyne bundle -pkg theme -name ResourceCodeIcon -a -o ../theme/icons.go code.png
+fyne bundle -pkg theme -name ResourceBrowseIcon -a -o ../theme/icons.go browse.png
 
 fyne bundle -pkg theme -name ResourceRunIcon -a -o ../theme/icons.go run.png

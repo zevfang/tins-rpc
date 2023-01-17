@@ -4,6 +4,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 	tinsTheme "tins-rpc/theme"
 )
@@ -19,6 +20,7 @@ func initWelcome() *container.TabItem {
 	for i := range wel.Segments {
 		if seg, ok := wel.Segments[i].(*widget.TextSegment); ok {
 			seg.Style.Alignment = fyne.TextAlignCenter
+			seg.Style.ColorName = theme.ColorNamePrimary
 		}
 	}
 
