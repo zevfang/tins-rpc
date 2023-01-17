@@ -124,7 +124,7 @@ func NewMainWin() *MainWin {
 	// LEFT
 	//line := canvas.NewLine(color.NRGBA{R: 0x0, G: 0x0, B: 0x0, A: 0x42})
 	//line.StrokeWidth = 0.8
-	leftBtnBox := container.NewHBox(refreshBtn, clearBtn, layout.NewSpacer(), openBtn)
+	leftBtnBox := container.NewHBox(clearBtn, refreshBtn, layout.NewSpacer(), openBtn)
 	//container.NewVBox(line, leftBtnBox)
 	leftHeadCard := widget.NewCard("", "", leftBtnBox)
 	leftPanel := container.NewBorder(leftHeadCard, nil, nil, nil, mainWin.tree)

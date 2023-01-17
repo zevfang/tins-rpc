@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # icon https://www.iconfont.cn/collections/detail?spm=a313x.7781069.1998910419.d9df05512&cid=42825
+#      https://www.iconfont.cn/search/index?searchType=icon&q=%E5%AD%97%E6%AF%8D
 
 # use https://github.com/lusingander/fyne-theme-generator to generate theme file
 
@@ -13,4 +14,5 @@ fyne bundle -pkg theme -name ResourceMSquareIcon -a -o ../theme/icons.go m_squar
 fyne bundle -pkg theme -name ResourceAddIcon -a -o ../theme/icons.go add.png
 fyne bundle -pkg theme -name ResourceClearIcon -a -o ../theme/icons.go clear.png
 fyne bundle -pkg theme -name ResourceRefreshIcon -a -o ../theme/icons.go refresh.png
+
 fyne bundle -pkg theme -name ResourceRunIcon -a -o ../theme/icons.go run.png

@@ -1,6 +1,8 @@
 package gui
 
 import (
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"tins-rpc/common"
@@ -20,4 +22,19 @@ func newAbout() *about {
 
 func showAbout() {
 	newAbout().aboutDialog.Show()
+	//runPopUp(globalWin.win)
+}
+
+func runPopUp(w fyne.Window) {
+	var modal *widget.PopUp
+	modal = widget.NewModalPopUp(
+		container.NewVBox(
+			widget.NewLabel("bar"),
+			widget.NewButton("Close", func() { modal.Hide() }),
+		),
+		w.Canvas(),
+	)
+	modal.Resize(fyne.NewSize(WindowWidth/2, WindowHeight))
+	modal.Move(fyne.Position{250, 250})
+	modal.Show()
 }

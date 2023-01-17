@@ -14,6 +14,10 @@ func (DarkTheme) Color(c fyne.ThemeColorName, v fyne.ThemeVariant) color.Color {
 	switch c {
 	case theme.ColorNameBackground:
 		return color.NRGBA{R: 0x30, G: 0x30, B: 0x30, A: 0xff}
+	case theme.ColorNameMenuBackground:
+		return color.NRGBA{R: 0x30, G: 0x30, B: 0x30, A: 0xff}
+	case theme.ColorNameOverlayBackground:
+		return color.NRGBA{R: 0x30, G: 0x30, B: 0x30, A: 0xff}
 	case theme.ColorNameButton:
 		return color.Alpha16{A: 0x0}
 	case theme.ColorNameDisabledButton:
@@ -30,6 +34,8 @@ func (DarkTheme) Color(c fyne.ThemeColorName, v fyne.ThemeVariant) color.Color {
 		return color.NRGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xf}
 	case theme.ColorNameInputBackground:
 		return color.NRGBA{R: 0xff, G: 0xff, B: 0xff, A: 0x19}
+	case theme.ColorNameInputBorder:
+		return color.NRGBA{R: 0xff, G: 0xff, B: 0xff, A: 0x19}
 	case theme.ColorNamePlaceHolder:
 		return color.NRGBA{R: 0xb2, G: 0xb2, B: 0xb2, A: 0xff}
 	case theme.ColorNamePressed:
@@ -40,6 +46,9 @@ func (DarkTheme) Color(c fyne.ThemeColorName, v fyne.ThemeVariant) color.Color {
 		return color.NRGBA{R: 0x0, G: 0x0, B: 0x0, A: 0x99}
 	case theme.ColorNameShadow:
 		return color.NRGBA{R: 0x0, G: 0x0, B: 0x0, A: 0x66}
+	case theme.ColorNameSeparator:
+		return color.NRGBA{R: 0x30, G: 0x30, B: 0x30, A: 0xff}
+
 	default:
 		return theme.DefaultTheme().Color(c, v)
 	}
