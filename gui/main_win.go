@@ -26,7 +26,6 @@ type MainWin struct {
 }
 
 var (
-	Version      = "v1.0.0"
 	AppID        = "com.tins.rpc.app"
 	globalWin    *MainWin
 	globalConfig *tinsTheme.Config
@@ -44,6 +43,7 @@ func init() {
 
 func NewMainWin() *MainWin {
 	mainWin := new(MainWin)
+	globalWin = mainWin
 	// APP
 	mainWin.app = app.NewWithID(AppID)
 	//mainWin.app.Settings().SetTheme(&tinsTheme.DarkTheme{})
@@ -124,12 +124,9 @@ func NewMainWin() *MainWin {
 	}
 
 	// LEFT
-	//line := canvas.NewLine(color.NRGBA{R: 0x0, G: 0x0, B: 0x0, A: 0x42})
-	//line.StrokeWidth = 0.8
 	leftBtnBox := container.NewHBox(clearBtn, refreshBtn, layout.NewSpacer(), openBtn)
-	//container.NewVBox(line, leftBtnBox)
-	leftHeadCard := widget.NewCard("", "", leftBtnBox)
-	leftPanel := container.NewBorder(leftHeadCard, nil, nil, nil, mainWin.tree)
+	leftCard := container.NewBorder(leftBtnBox, nil, nil, nil, mainWin.tree) //边框
+	leftPanel := widget.NewCard("", "", leftCard)
 
 	// CONTENT
 	content := container.NewHSplit(leftPanel, mainWin.tabs)
@@ -140,7 +137,6 @@ func NewMainWin() *MainWin {
 	mainWin.mainMenu = mainMenu()
 	mainWin.win.SetMainMenu(mainWin.mainMenu)
 
-	globalWin = mainWin
 	return globalWin
 }
 

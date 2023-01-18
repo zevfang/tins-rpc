@@ -28,14 +28,14 @@ type Definitions struct {
 
 func NewDefinitions() *Definitions {
 	return &Definitions{
-		fileNamesRead:     []string{},
+		fileNamesRead:     make([]string, 0),
 		fileBody:          "",
-		fileNameToPackage: map[string]string{},
+		fileNameToPackage: make(map[string]string),
 		fileName:          "",
 		pkgName:           "",
-		svcs:              map[string]*pp.Service{},
-		rpcs:              map[string]*pp.RPC{},
-		msgs:              map[string]*pp.Message{},
+		svcs:              make(map[string]*pp.Service),
+		rpcs:              make(map[string]*pp.RPC),
+		msgs:              make(map[string]*pp.Message),
 	}
 }
 

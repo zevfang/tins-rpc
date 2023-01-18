@@ -13,12 +13,14 @@ import (
 func mainMenu() *fyne.MainMenu {
 	_themeMenu := themeMenu()
 	_i18nMenu := i18nMenu()
+	_fullScreenMenu := fullScreenMenu()
 	sysMenu := &fyne.Menu{
 		Label: I18n(tinsTheme.SystemTitle),
 		Items: []*fyne.MenuItem{
 			{Label: I18n(tinsTheme.OpenFileTitle), Action: OpenFileAction},
 			_themeMenu,
 			_i18nMenu,
+			_fullScreenMenu,
 			fyne.NewMenuItemSeparator(),
 			{Label: I18n(tinsTheme.QuitTitle), IsQuit: true, Action: QuitAction},
 		},
@@ -115,6 +117,27 @@ func i18nMenu() *fyne.MenuItem {
 		i18nZhCn,
 	)
 	return i18nOpt
+}
+
+func fullScreenMenu() *fyne.MenuItem {
+	var fullScreen *fyne.MenuItem
+	fullScreen = fyne.NewMenuItem(I18n(tinsTheme.FullScreenTitle), nil)
+	fullScreen.Action = func() {
+		if globalWin.win.FullScreen() {
+			fullScreen.Label = I18n(tinsTheme.FullScreenTitle)
+			globalWin.win.SetFullScreen(false)
+		} else {
+			fullScreen.Label = I18n(tinsTheme.QuitFullScreenTitle)
+			globalWin.win.SetFullScreen(true)
+		}
+		globalWin.mainMenu.Refresh()
+	}
+	if globalWin.win.FullScreen() {
+		fullScreen.Label = I18n(tinsTheme.QuitFullScreenTitle)
+	} else {
+		fullScreen.Label = I18n(tinsTheme.FullScreenTitle)
+	}
+	return fullScreen
 }
 
 func OpenFileAction() {

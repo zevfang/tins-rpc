@@ -42,6 +42,12 @@ var (
 	OpenFileTitle = "Open File"
 	_             = message.SetString(language.Chinese, OpenFileTitle, `打开文件`)
 
+	FullScreenTitle = "FullScreen"
+	_               = message.SetString(language.Chinese, FullScreenTitle, `全屏`)
+
+	QuitFullScreenTitle = "QuitFullScreen"
+	_                   = message.SetString(language.Chinese, QuitFullScreenTitle, `退出全屏`)
+
 	QuitTitle = "Quit"
 	_         = message.SetString(language.Chinese, QuitTitle, `退出`)
 
