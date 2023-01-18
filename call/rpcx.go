@@ -2,9 +2,10 @@ package call
 
 import (
 	"context"
+	"time"
+
 	"github.com/smallnest/rpcx/client"
 	"github.com/smallnest/rpcx/protocol"
-	"time"
 )
 
 func DoRPCX(req RequestData) (header map[string]string, body []byte, err error) {

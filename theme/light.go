@@ -3,9 +3,10 @@
 package theme
 
 import (
+	"image/color"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/theme"
-	"image/color"
 )
 
 type LightTheme struct{}
@@ -31,9 +32,9 @@ func (LightTheme) Color(c fyne.ThemeColorName, v fyne.ThemeVariant) color.Color 
 	case theme.ColorNameForeground:
 		return color.NRGBA{R: 0x21, G: 0x21, B: 0x21, A: 0xff}
 	case theme.ColorNameHover:
-		return color.NRGBA{R: 0x0, G: 0x0, B: 0x0, A: 0xf}
-	case theme.ColorNameInputBackground:
 		return color.NRGBA{R: 0x0, G: 0x0, B: 0x0, A: 0x19}
+	case theme.ColorNameInputBackground:
+		return color.NRGBA{R: 0xff, G: 0xff, B: 0xff, A: 0xff}
 	case theme.ColorNameInputBorder:
 		return color.NRGBA{R: 0x0, G: 0x0, B: 0x0, A: 0x19}
 	case theme.ColorNamePlaceHolder:

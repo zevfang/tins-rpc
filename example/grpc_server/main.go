@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
-	"google.golang.org/grpc"
 	"log"
 	"net"
+
 	greeterPb "tins-rpc/example/proto"
+
+	"google.golang.org/grpc"
 )
 
 const (

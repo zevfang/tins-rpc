@@ -3,10 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/smallnest/rpcx/server"
 	"log"
 	"time"
+
 	greeterPb "tins-rpc/example/proto"
+
+	"github.com/smallnest/rpcx/server"
 )
 
 const (

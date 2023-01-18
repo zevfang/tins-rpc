@@ -2,14 +2,16 @@ package gui
 
 import (
 	"fmt"
+
+	"tins-rpc/call"
+	"tins-rpc/common"
+	tinsTheme "tins-rpc/theme"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 	pp "github.com/emicklei/proto"
-	"tins-rpc/call"
-	"tins-rpc/common"
-	tinsTheme "tins-rpc/theme"
 )
 
 func menuTree() *widget.Tree {
@@ -25,7 +27,7 @@ func menuTree() *widget.Tree {
 		},
 		//create
 		func(b bool) fyne.CanvasObject {
-			codeBtnIcon := widget.NewButtonWithIcon("", tinsTheme.ResourceBrowseIcon, nil)
+			codeBtnIcon := widget.NewButtonWithIcon("", tinsTheme.ResourceCodeIcon, nil)
 			codeBtnIcon.Hide()
 			return container.NewHBox(
 				widget.NewIcon(tinsTheme.ResourceMSquareIcon),
@@ -265,6 +267,7 @@ func (t *TreeData) RequestJson(uid string) string {
 }
 
 func (t *TreeData) RemoveAll() {
+	t.ProtoKeyPath = map[string]string{}
 	t.Files = map[string]struct{}{}
 	t.ProtoData = map[string][]TreeNode{}
 	t.ProtoFds = map[string]call.ProtoDescriptor{}

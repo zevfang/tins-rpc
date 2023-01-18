@@ -3,12 +3,13 @@ package common
 import (
 	"bytes"
 	"fmt"
-	"github.com/jhump/protoreflect/desc"
 	"io"
 	"io/ioutil"
 	"os"
 	"path"
 	"strings"
+
+	"github.com/jhump/protoreflect/desc"
 
 	pp "github.com/emicklei/proto"
 )

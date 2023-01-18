@@ -2,6 +2,11 @@ package gui
 
 import (
 	"fmt"
+	"os"
+
+	"tins-rpc/data"
+	tinsTheme "tins-rpc/theme"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -10,9 +15,6 @@ import (
 	"fyne.io/fyne/v2/storage"
 	"fyne.io/fyne/v2/widget"
 	"golang.org/x/text/language"
-	"os"
-	"tins-rpc/data"
-	tinsTheme "tins-rpc/theme"
 )
 
 type MainWin struct {

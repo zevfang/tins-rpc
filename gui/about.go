@@ -1,10 +1,11 @@
 package gui
 
 import (
-	"fyne.io/fyne/v2/dialog"
-	"fyne.io/fyne/v2/widget"
 	"tins-rpc/common"
 	tinsTheme "tins-rpc/theme"
+
+	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/widget"
 )
 
 type about struct {

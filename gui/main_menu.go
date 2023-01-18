@@ -1,12 +1,13 @@
 package gui
 
 import (
+	"tins-rpc/common"
+	tinsTheme "tins-rpc/theme"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
 	"golang.org/x/text/language"
-	"tins-rpc/common"
-	tinsTheme "tins-rpc/theme"
 )
 
 func mainMenu() *fyne.MainMenu {

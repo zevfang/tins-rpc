@@ -1,9 +1,10 @@
 package theme
 
 import (
+	"reflect"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/data/binding"
-	"reflect"
 )
 
 type Config struct {

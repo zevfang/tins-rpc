@@ -3,14 +3,16 @@ package gui
 import (
 	"encoding/json"
 	"fmt"
-	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/layout"
-	"fyne.io/fyne/v2/widget"
 	"strings"
 	"time"
+
 	"tins-rpc/call"
 	"tins-rpc/common"
 	tinsTheme "tins-rpc/theme"
+
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/widget"
 )
 
 type TabItemView struct {
