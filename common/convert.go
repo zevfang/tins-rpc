@@ -1,6 +1,8 @@
 package common
 
 import (
+	"github.com/fullstorydev/grpcurl"
+	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	"github.com/jhump/protoreflect/desc"
 	"github.com/jhump/protoreflect/desc/protoparse"
@@ -39,4 +41,32 @@ func PbToJson(fd *desc.FileDescriptor, messageName string, protoData []byte) ([]
 	err := proto.Unmarshal(protoData, dymsg)
 	jsonByte, err := dymsg.MarshalJSON()
 	return jsonByte, err
+}
+
+func MakeTemplateMessageJsonAll(fd *desc.FileDescriptor) (map[string]string, error) {
+	data := make(map[string]string)
+	messages := fd.GetMessageTypes()
+	for _, descriptor := range messages {
+		outJson, err := MakeTemplateMessageJson(descriptor)
+		if err != nil {
+			return data, err
+		}
+		data[descriptor.GetName()] = outJson
+	}
+	return data, nil
+}
+
+func MakeTemplateMessageJson(descriptor *desc.MessageDescriptor) (string, error) {
+	message := grpcurl.MakeTemplate(descriptor)
+	jsm := jsonpb.Marshaler{
+		OrigName:     true,
+		EmitDefaults: true,
+		EnumsAsInts:  true,
+		Indent:       "\t",
+	}
+	out, err := jsm.MarshalToString(message)
+	if err != nil {
+		return "", err
+	}
+	return out, nil
 }

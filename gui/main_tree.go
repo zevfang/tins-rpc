@@ -175,10 +175,9 @@ func (t *TreeData) Append(filePath string) error {
 }
 
 func (t *TreeData) Parse(filePath string, d *common.Definitions) map[string][]TreeNode {
-	msgJson := common.NewDecoder(d).DecodeAll()
+	msgJson, _ := common.MakeTemplateMessageJsonAll(d.GetFd())
 	data := make(map[string][]TreeNode)
 	// "":greeter.proto
-
 	data[""] = append(data[""], TreeNode{
 		NodeID:  d.GetFileName(),
 		Type:    ProtoProto,
