@@ -3,6 +3,7 @@ package gui
 import (
 	"encoding/json"
 	"fmt"
+	"image/color"
 	"strings"
 	"time"
 
@@ -10,7 +11,10 @@ import (
 	"tins-rpc/common"
 	tinsTheme "tins-rpc/theme"
 
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/data/validation"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/widget"
 )
@@ -42,6 +46,8 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 	if len(uri) > 0 {
 		tabItemView.UriInput.Text = uri
 	}
+	tabItemView.UriInput.Validator = validation.NewRegexp(`\S+`, "URL must not be empty")
+	tabItemView.UriInput.Validator = validation.NewRegexp(`((\d{1,3}.){3}\d{1,3}:\d+)`, "please input right URL")
 
 	// REQ TEXT
 	tabItemView.RequestText = widget.NewMultiLineEntry()
@@ -54,7 +60,22 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 
 	// METADATA TEXT
 	tabItemView.MetadataText = widget.NewMultiLineEntry()
-	tabItemView.MetadataText.SetPlaceHolder("METADATA")
+	tabItemView.MetadataText.Hide()
+	metadataTxt := canvas.NewText("  ▲ METADATA", color.NRGBA{R: 0x21, G: 0x96, B: 0xf3, A: 0xff})
+	metadataTxt.Alignment = fyne.TextAlignLeading
+	metadataTxt.TextSize = 14
+	metadataBtn := widget.NewButton("", func() {
+		if tabItemView.MetadataText.Visible() {
+			metadataTxt.Text = "  ▲ METADATA"
+			tabItemView.MetadataText.Hide()
+		} else {
+			metadataTxt.Text = "  ▼ METADATA"
+			tabItemView.MetadataText.Show()
+		}
+	})
+	metadataHeaderPaneTop := container.NewMax(metadataBtn, metadataTxt)
+	metadataHeaderPaneBottom := container.NewMax(tabItemView.MetadataText)
+	metadataPanel := container.NewVBox(metadataHeaderPaneTop, metadataHeaderPaneBottom)
 
 	// CALL BUTTON
 	tabItemView.CallButton = widget.NewButtonWithIcon(I18n(tinsTheme.RunButtonTitle), tinsTheme.ResourceRunIcon, func() {
@@ -81,8 +102,8 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 
 	centerPanel := container.NewVSplit(
 		container.NewHSplit(tabItemView.RequestText, tabItemView.ResponseText),
-		tabItemView.MetadataText)
-	centerPanel.SetOffset(0.9)
+		metadataPanel)
+	centerPanel.SetOffset(0.96)
 
 	contentPanel := container.NewBorder(headPanel, nil, nil, nil, centerPanel)
 	tabItemView.TabItem = container.NewTabItem(tabTitle, contentPanel)
