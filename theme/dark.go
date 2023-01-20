@@ -88,11 +88,13 @@ func (DarkTheme) Size(s fyne.ThemeSizeName) float32 {
 	case theme.SizeNameScrollBarSmall:
 		return 3
 	case theme.SizeNameSeparatorThickness:
-		return 1
+		return 0
 	case theme.SizeNameText:
 		return 14
 	case theme.SizeNameInputBorder:
 		return 2
+	case theme.SizeNameLineSpacing:
+		return 10
 	default:
 		return theme.DefaultTheme().Size(s)
 	}
