@@ -19,18 +19,24 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+const centerPanelOffset = 0.96
+
 type TabItemView struct {
-	UriInput      *widget.Entry
-	RequestText   *widget.Entry
-	ResponseText  *widget.Entry
-	MetadataText  *widget.Entry
-	RpcSelect     *widget.Select
-	UsedTimeLabel *widget.Label
-	CallButton    *widget.Button
-	CodeText      *widget.Entry //浏览proto源代码
-	SelectTree    string
-	ProtoName     string
-	TabItem       *container.TabItem
+	UriInput           *widget.Entry
+	RequestText        *widget.Entry
+	ResponseText       *widget.Entry
+	MetadataText       *widget.Entry
+	MetadataTextHeight float32
+	RpcSelect          *widget.Select
+	UsedTimeLabel      *widget.Label
+	CallButton         *widget.Button
+	CodeText           *widget.Entry //浏览proto源代码
+	SelectTree         string
+	ProtoName          string
+	TabItem            *container.TabItem
+	contentPanel       *fyne.Container
+	metadataPanel      *fyne.Container
+	centerPanel        *container.Split
 }
 
 func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
@@ -59,23 +65,7 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 	tabItemView.ResponseText.PlaceHolder = "Response(json)"
 
 	// METADATA TEXT
-	tabItemView.MetadataText = widget.NewMultiLineEntry()
-	tabItemView.MetadataText.Hide()
-	metadataTxt := canvas.NewText("  ▲ METADATA", color.NRGBA{R: 0x21, G: 0x96, B: 0xf3, A: 0xff})
-	metadataTxt.Alignment = fyne.TextAlignLeading
-	metadataTxt.TextSize = 14
-	metadataBtn := widget.NewButton("", func() {
-		if tabItemView.MetadataText.Visible() {
-			metadataTxt.Text = "  ▲ METADATA"
-			tabItemView.MetadataText.Hide()
-		} else {
-			metadataTxt.Text = "  ▼ METADATA"
-			tabItemView.MetadataText.Show()
-		}
-	})
-	metadataHeaderPaneTop := container.NewMax(metadataBtn, metadataTxt)
-	metadataHeaderPaneBottom := container.NewMax(tabItemView.MetadataText)
-	metadataPanel := container.NewVBox(metadataHeaderPaneTop, metadataHeaderPaneBottom)
+	tabItemView.newMetadataContainer()
 
 	// CALL BUTTON
 	tabItemView.CallButton = widget.NewButtonWithIcon(I18n(tinsTheme.RunButtonTitle), tinsTheme.ResourceRunIcon, func() {
@@ -99,16 +89,66 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 			layout.NewSpacer(),
 			container.NewGridWithColumns(2, tabItemView.UsedTimeLabel, tabItemView.CallButton),
 		))
-
-	centerPanel := container.NewVSplit(
+	tabItemView.centerPanel = container.NewVSplit(
 		container.NewHSplit(tabItemView.RequestText, tabItemView.ResponseText),
-		metadataPanel)
-	centerPanel.SetOffset(0.96)
+		tabItemView.metadataPanel)
+	tabItemView.centerPanel.SetOffset(centerPanelOffset)
 
-	contentPanel := container.NewBorder(headPanel, nil, nil, nil, centerPanel)
-	tabItemView.TabItem = container.NewTabItem(tabTitle, contentPanel)
+	tabItemView.contentPanel = container.NewBorder(headPanel, nil, nil, nil, tabItemView.centerPanel)
+	tabItemView.TabItem = container.NewTabItem(tabTitle, tabItemView.contentPanel)
 	tabs.Append(tabItemView.TabItem)
 	return tabItemView
+}
+
+func (tiv *TabItemView) newMetadataContainer() {
+	tiv.MetadataText = widget.NewMultiLineEntry()
+	tiv.MetadataText.Hide()
+	metadataTxt := canvas.NewText("  ▲ METADATA", color.NRGBA{R: 0x21, G: 0x96, B: 0xf3, A: 0xff})
+	metadataTxt.Alignment = fyne.TextAlignLeading
+	metadataTxt.TextSize = 14
+	metadataBtn := widget.NewButton("", func() {
+		if tiv.MetadataText.Visible() {
+			metadataTxt.Text = "  ▲ METADATA"
+			tiv.MetadataText.Hide()
+		} else {
+			metadataTxt.Text = "  ▼ METADATA"
+			tiv.MetadataText.Show()
+		}
+		tiv.centerPanel.SetOffset(centerPanelOffset)
+		tiv.centerPanel.Refresh()
+	})
+	metadataPanelTop := container.NewMax(metadataBtn, metadataTxt)
+	metadataPanelBottom := container.NewMax(tiv.MetadataText)
+	tiv.metadataPanel = container.NewVBox(
+		metadataPanelTop,
+		metadataPanelBottom,
+	)
+	// 监听panel重置txt宽度
+	go func() {
+		time.Sleep(1 * time.Second)
+		for {
+			_centerPanelSize := tiv.centerPanel.Trailing.Size()
+			centerPanelHeight := _centerPanelSize.Height
+
+			_metadataPanelTopSize := metadataPanelTop.Size()
+			metadataPanelTopHeight := _metadataPanelTopSize.Height
+
+			metadataTextHeight := centerPanelHeight - metadataPanelTopHeight
+			tiv.MetadataText.Resize(fyne.NewSize(tiv.MetadataText.Size().Width, metadataTextHeight))
+			tiv.MetadataText.Refresh()
+			time.Sleep(200 * time.Millisecond)
+		}
+	}()
+}
+
+func AppendTabItemCodeView(tabTitle string, protoBody string, tabs *container.DocTabs) *TabItemView {
+	tabItemCodeView := &TabItemView{}
+	tabItemCodeView.CodeText = widget.NewMultiLineEntry()
+	tabItemCodeView.CodeText.Text = protoBody
+	contentPanel := container.NewBorder(nil, nil, nil, nil, tabItemCodeView.CodeText)
+	tabItemCodeView.TabItem = container.NewTabItem(tabTitle, contentPanel)
+	tabs.Append(tabItemCodeView.TabItem)
+	return tabItemCodeView
 }
 
 func (t *TabItemView) OnCall() {
@@ -187,14 +227,4 @@ func (t *TabItemView) OnCall() {
 		t.CallButton.Enable()
 	}()
 
-}
-
-func AppendTabItemCodeView(tabTitle string, protoBody string, tabs *container.DocTabs) *TabItemView {
-	tabItemCodeView := &TabItemView{}
-	tabItemCodeView.CodeText = widget.NewMultiLineEntry()
-	tabItemCodeView.CodeText.Text = protoBody
-	contentPanel := container.NewBorder(nil, nil, nil, nil, tabItemCodeView.CodeText)
-	tabItemCodeView.TabItem = container.NewTabItem(tabTitle, contentPanel)
-	tabs.Append(tabItemCodeView.TabItem)
-	return tabItemCodeView
 }
