@@ -17,8 +17,9 @@ TinsRPC is an rpc client tool. To use it, you must import the proto file. It is 
 
 ### Features
 
-* Support simple rpcx service calls
-* ……
+* Cross platform RPC client
+* Send requests to a RPCx service(Supports unary)
+* Send requests to a gRPC service(Supports unary)
 
 ### Installation
 

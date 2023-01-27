@@ -17,7 +17,9 @@ TinsRPC是一个rpc的客户端工具，使用它你必须导入proto文件，�
 
 ### Features
 
-* 支持简单的rpcx服务调用
+* 跨平台RPC客户端
+* 支持向RPCx服务发送请求（一元）
+* 支持向gRPC服务发送请求（一元）
 
 
 ### Installation
