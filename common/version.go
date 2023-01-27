@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const Version = "v1.0.3"
+const Version = "v1.0.4"
 
 const releasesUrl = "https://api.github.com/repos/zevfang/tins-rpc/releases/latest"
 
