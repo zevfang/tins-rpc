@@ -16,7 +16,7 @@ English | [简体中文](README-CN.md)
 TinsRPC is an RPC client tool that satisfies developers' RPC local debugging. Currently, the supported functions are relatively simple, and more practical functions are still planned.
 
 <p align="center">
-  <img src="resources/preview.gif" style="max-width: 100%; display: inline-block;" data-target="animated-image.originalImage">
+  <img src="resource/preview.gif" style="max-width: 100%; display: inline-block;" data-target="animated-image.originalImage">
 </p>
 
 ### Features
