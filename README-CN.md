@@ -16,7 +16,7 @@
 TinsRPC是一个RPC的客户端工具，满足开发人员的RPC本地调试，目前支持功能相对简单，更多实用功能还在计划中。
 
 <p align="center">
-  <img src="resources/preview.gif" style="max-width: 100%; display: inline-block;" data-target="animated-image.originalImage">
+  <img src="resource/preview.gif" style="max-width: 100%; display: inline-block;" data-target="animated-image.originalImage">
 </p>
 
 ### Features
