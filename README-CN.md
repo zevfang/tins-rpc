@@ -5,7 +5,7 @@
 <div align=center>
 
 [![Go](https://github.com/zevfang/tins-rpc/workflows/Go/badge.svg?branch=master)](https://github.com/zevfang/tins-rpc/actions)
-[![Release](https://img.shields.io/github/v/release/zevfang/tins-rpc.svg?style=flat-square)](https://github.com/zevfang/tins-rpc)
+[![Release](https://img.shields.io/github/v/release/zevfang/tins-rpc.svg?style=flat-square)](https://github.com/zevfang/tins-rpc/releases)
 
 </div>
 
@@ -13,14 +13,20 @@
 
 [English](README.md) | 简体中文
 
-TinsRPC是一个rpc的客户端工具，使用它你必须导入proto文件，目前它并不成熟，可能会有异常现象，但它一定会越来越好，如果你对它感兴趣欢迎加入我们。
+TinsRPC是一个RPC的客户端工具，满足开发人员的RPC本地调试，目前支持功能相对简单，更多实用功能还在计划中。
+
+<p align="center">
+  <img src="resources/preview.gif" style="max-width: 100%; display: inline-block;" data-target="animated-image.originalImage">
+</p>
 
 ### Features
 
 * 跨平台RPC客户端
+* 支持.proto文件导入
 * 支持向RPCx服务发送请求（一元）
 * 支持向gRPC服务发送请求（一元）
-
+* 支持中英文主题
+* 支持暗色主题
 
 ### Installation
 

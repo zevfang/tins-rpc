@@ -5,7 +5,7 @@
 <div align=center>
 
 [![Go](https://github.com/zevfang/tins-rpc/workflows/Go/badge.svg?branch=master)](https://github.com/zevfang/tins-rpc/actions)
-[![Release](https://img.shields.io/github/v/release/zevfang/tins-rpc.svg?style=flat-square)](https://github.com/zevfang/tins-rpc)
+[![Release](https://img.shields.io/github/v/release/zevfang/tins-rpc.svg?style=flat-square)](https://github.com/zevfang/tins-rpc/releases)
 
 </div>
 
@@ -13,13 +13,20 @@
 
 English | [简体中文](README-CN.md)
 
-TinsRPC is an rpc client tool. To use it, you must import the proto file. It is not yet mature, and there may be abnormal phenomena, but it will definitely get better and better. If you are interested in it, welcome to join us.
+TinsRPC is an RPC client tool that satisfies developers' RPC local debugging. Currently, the supported functions are relatively simple, and more practical functions are still planned.
+
+<p align="center">
+  <img src="resources/preview.gif" style="max-width: 100%; display: inline-block;" data-target="animated-image.originalImage">
+</p>
 
 ### Features
 
 * Cross platform RPC client
+* Support .proto file import
 * Send requests to a RPCx service(Supports unary)
 * Send requests to a gRPC service(Supports unary)
+* Support Chinese and English themes
+* Support dark theme
 
 ### Installation
 
