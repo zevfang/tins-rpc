@@ -15,10 +15,6 @@
 
 TinsRPC是一个RPC的客户端工具，满足开发人员的RPC本地调试，目前支持功能相对简单，更多实用功能还在计划中。
 
-<p align="center">
-  <img src="resource/preview.gif" style="max-width: 100%; display: inline-block;" data-target="animated-image.originalImage">
-</p>
-
 ### Features
 
 * 跨平台RPC客户端
@@ -60,3 +56,7 @@ go build -ldflags="-H windowsgui"
 ```
 
 您可以前往 [release](https://github.com/zevfang/tins-rpc/releases) 页面获取最新的二进制文件。
+
+<p align="center">
+  <img src="resource/preview.gif" style="max-width: 100%; display: inline-block;" data-target="animated-image.originalImage">
+</p>
