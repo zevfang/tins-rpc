@@ -2,10 +2,18 @@ package call
 
 import "github.com/jhump/protoreflect/desc"
 
+type FrameTypeEnum string
+
 const (
-	RPCX = "RPCx"
-	GRPC = "gRPC"
+	RPCX FrameTypeEnum = "RPCx"
+	GRPC FrameTypeEnum = "gRPC"
 )
+
+var FrameTypes = []string{RPCX.ToString(), GRPC.ToString()}
+
+func (b FrameTypeEnum) ToString() string {
+	return string(b)
+}
 
 type RequestData struct {
 	Fd            ProtoDescriptor
@@ -25,9 +33,9 @@ type ProtoDescriptor struct {
 
 func Call(entity string, req RequestData) (header map[string]string, body []byte, err error) {
 	switch entity {
-	case RPCX:
+	case RPCX.ToString():
 		return DoRPCX(req)
-	case GRPC:
+	case GRPC.ToString():
 		return DoGRPC(req)
 	}
 	return

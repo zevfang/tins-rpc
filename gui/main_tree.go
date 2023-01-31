@@ -138,8 +138,21 @@ func NewTreeData() *TreeData {
 		ProtoData:    make(map[string][]TreeNode),
 		ProtoFds:     make(map[string]call.ProtoDescriptor),
 	}
-	t.ProtoData[""] = make([]TreeNode, 0) //初始化根节点
+	// 初始化根节点
+	t.ProtoData[""] = make([]TreeNode, 0)
+	// 重新加载
+	t.Reload()
 	return t
+}
+
+func (t *TreeData) Reload() {
+	ts := StoreData.Tree.List()
+	for _, p := range ts {
+		if err := t.Append(p); err != nil {
+			fmt.Println("Reload failed", p, err)
+			continue
+		}
+	}
 }
 
 func (t *TreeData) Append(filePath string) error {
@@ -171,6 +184,9 @@ func (t *TreeData) Append(filePath string) error {
 	// 保存.proto地址列表
 	t.Files[filePath] = struct{}{}
 	t.ProtoKeyPath[definitions.GetFileName()] = definitions.GetFileBody()
+
+	// 保存文件路径到本地
+	StoreData.Tree.Set(definitions.GetFileName(), filePath)
 	return nil
 }
 
@@ -270,6 +286,9 @@ func (t *TreeData) RemoveAll() {
 	t.Files = map[string]struct{}{}
 	t.ProtoData = map[string][]TreeNode{}
 	t.ProtoFds = map[string]call.ProtoDescriptor{}
+	// 清空本地存储
+	StoreData.Tree.Clear()
+	StoreData.Url.Clear()
 }
 
 func (t *TreeData) RefreshAll() {

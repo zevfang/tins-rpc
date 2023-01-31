@@ -9,6 +9,7 @@ import (
 
 	"tins-rpc/call"
 	"tins-rpc/common"
+	"tins-rpc/store"
 	tinsTheme "tins-rpc/theme"
 
 	"fyne.io/fyne/v2"
@@ -22,12 +23,12 @@ import (
 const centerPanelOffset = 0.96
 
 type TabItemView struct {
-	UriInput           *widget.Entry
+	UrlInput           *widget.Entry
 	RequestText        *widget.Entry
 	ResponseText       *widget.Entry
 	MetadataText       *widget.Entry
 	MetadataTextHeight float32
-	RpcSelect          *widget.Select
+	FrameSelect        *widget.Select
 	UsedTimeLabel      *widget.Label
 	CallButton         *widget.Button
 	CodeText           *widget.Entry //浏览proto源代码
@@ -44,16 +45,16 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 	tabItemView.ProtoName = fmt.Sprintf("%s.proto", strings.Split(tabTitle, ".")[0]) //本地存储使用
 
 	// URI TEXT
-	tabItemView.UriInput = widget.NewEntry()
-	tabItemView.UriInput.PlaceHolder = "127.0.0.1:8080"
+	tabItemView.UrlInput = widget.NewEntry()
+	tabItemView.UrlInput.PlaceHolder = "127.0.0.1:8080"
 
-	// 本地获取uri
-	uri := StorageData.GetUris(tabItemView.ProtoName)
-	if len(uri) > 0 {
-		tabItemView.UriInput.Text = uri
+	// 本地获取url
+	storeUrl := StoreData.Url.Get(tabItemView.ProtoName)
+	if len(storeUrl.Url) > 0 {
+		tabItemView.UrlInput.Text = storeUrl.Url
 	}
-	tabItemView.UriInput.Validator = validation.NewRegexp(`\S+`, "URL must not be empty")
-	tabItemView.UriInput.Validator = validation.NewRegexp(`((\d{1,3}.){3}\d{1,3}:\d+)`, "please input right URL")
+	tabItemView.UrlInput.Validator = validation.NewRegexp(`\S+`, "URL must not be empty")
+	tabItemView.UrlInput.Validator = validation.NewRegexp(`((\d{1,3}.){3}\d{1,3}:\d+)`, "please input right URL")
 
 	// REQ TEXT
 	tabItemView.RequestText = widget.NewMultiLineEntry()
@@ -73,15 +74,19 @@ func AppendTabItemView(tabTitle string, tabs *container.DocTabs) *TabItemView {
 	})
 
 	// 框架选项
-	tabItemView.RpcSelect = widget.NewSelect([]string{call.RPCX, call.GRPC}, func(s string) {})
-	tabItemView.RpcSelect.SetSelected(call.RPCX)
+	tabItemView.FrameSelect = widget.NewSelect(call.FrameTypes, func(s string) {})
+	if len(storeUrl.Frame) == 0 {
+		tabItemView.FrameSelect.SetSelected(call.RPCX.ToString())
+	} else {
+		tabItemView.FrameSelect.SetSelected(storeUrl.Frame)
+	}
 
 	// 耗时显示
 	tabItemView.UsedTimeLabel = widget.NewLabel("")
 
 	headPanel := container.NewGridWithColumns(6,
-		tabItemView.UriInput,
-		tabItemView.RpcSelect,
+		tabItemView.UrlInput,
+		tabItemView.FrameSelect,
 		layout.NewSpacer(),
 		layout.NewSpacer(),
 		layout.NewSpacer(),
@@ -152,8 +157,8 @@ func AppendTabItemCodeView(tabTitle string, protoBody string, tabs *container.Do
 }
 
 func (t *TabItemView) OnCall() {
-	if len(t.UriInput.Text) == 0 {
-		t.ResponseText.Text = "URI not found"
+	if len(t.UrlInput.Text) == 0 {
+		t.ResponseText.Text = "URL not found"
 		t.ResponseText.Refresh()
 		return
 	}
@@ -162,20 +167,20 @@ func (t *TabItemView) OnCall() {
 		t.RequestText.Refresh()
 		return
 	}
-	address := t.UriInput.Text
-	uri := strings.Split(address, ":")
-	if len(uri) != 2 {
-		t.ResponseText.Text = "URI failed,Does not include[:]."
+	address := t.UrlInput.Text
+	url := strings.Split(address, ":")
+	if len(url) != 2 {
+		t.ResponseText.Text = "URL failed,Does not include[:]."
 		t.ResponseText.Refresh()
 		return
 	}
 	if strings.Contains(address, "/") {
-		t.ResponseText.Text = "URI failed,no path required."
+		t.ResponseText.Text = "URL failed,no path required."
 		t.ResponseText.Refresh()
 		return
 	}
 
-	fmt.Println("框架：", t.RpcSelect.Selected)
+	fmt.Println("框架：", t.FrameSelect.Selected)
 	svcPath := strings.Split(t.SelectTree, ".")
 	fmt.Println("服务：", t.SelectTree)
 	payload := []byte(t.RequestText.Text)
@@ -190,16 +195,19 @@ func (t *TabItemView) OnCall() {
 			return
 		}
 	}
-	// 保存uri信息到本地
+	// 保存url信息到本地
 	protoName := fmt.Sprintf("%s.proto", svcPath[0])
-	StorageData.SetUris(protoName, t.UriInput.Text)
+	StoreData.Url.Set(protoName, store.UrlStoreModel{
+		Url:   t.UrlInput.Text,
+		Frame: t.FrameSelect.Selected,
+	})
 
 	//禁用按钮
 	t.CallButton.Disable()
 
 	go func() {
 		tms := time.Now()
-		_, body, err := call.Call(t.RpcSelect.Selected, call.RequestData{
+		_, body, err := call.Call(t.FrameSelect.Selected, call.RequestData{
 			Fd:            MenuTree.ProtoFds[t.SelectTree],
 			Address:       address,
 			PackageName:   svcPath[0],

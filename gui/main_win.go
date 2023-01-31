@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"tins-rpc/data"
+	"tins-rpc/store"
 	tinsTheme "tins-rpc/theme"
 
 	"fyne.io/fyne/v2"
@@ -33,7 +33,7 @@ var (
 	WindowHeight float32 = 800
 	MenuTree             = NewTreeData()
 	TabItemList          = make(map[string]*TabItemView)
-	StorageData          = data.NewStorage()
+	StoreData            = store.InitStore()
 	Language     language.Tag
 )
 
